@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly manifestVersion="1.0" xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <asmv1:assemblyIdentity name="WiimoteWhiteboard.exe" version="0.2.0.0" publicKeyToken="6bd5277f9890ba81" language="neutral" processorArchitecture="msil" type="win32" />
+  <application />
+  <entryPoint>
+    <assemblyIdentity name="WiimoteWhiteboard" version="1.1.0.0" language="neutral" processorArchitecture="msil" />
+    <commandLine file="WiimoteWhiteboard.exe" parameters="" />
+  </entryPoint>
+  <trustInfo>
+    <security>
+      <applicationRequestMinimum>
+        <PermissionSet class="System.Security.PermissionSet" version="1" Unrestricted="true" ID="Custom" SameSite="site" />
+        <defaultAssemblyRequest permissionSetReference="Custom" />
+      </applicationRequestMinimum>
+    </security>
+  </trustInfo>
+  <dependency>
+    <dependentOS>
+      <osVersionInfo>
+        <os majorVersion="4" minorVersion="10" buildNumber="0" servicePackMajor="0" />
+      </osVersionInfo>
+    </dependentOS>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="preRequisite" allowDelayedBinding="true">
+      <assemblyIdentity name="Microsoft.Windows.CommonLanguageRuntime" version="2.0.50727.0" />
+    </dependentAssembly>
+  </dependency>
+  <dependency>
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="WiimoteWhiteboard.exe" size="53248">
+      <assemblyIdentity name="WiimoteWhiteboard" version="1.1.0.0" language="neutral" processorArchitecture="msil" />
+      <hash>
+        <dsig:Transforms>
+          <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+        </dsig:Transforms>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+        <dsig:DigestValue>Q7Ygy074a94AVC04qPkiUUsuezY=</dsig:DigestValue>
+      </hash>
+    </dependentAssembly>
+  </dependency>
+  <file name="WiimoteLib\docs\copyright.txt" size="221">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>eIK54SJqjYogtjZkekFmS0SmuEw=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="WiimoteLib\docs\license.txt" size="2692">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>l9JWb9rPZ10mralxWf8q0GtU2Rk=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="WiimoteLib\docs\readme.txt" size="2686">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>iIYBNiNX1JrCWC6D4GXJ+1yqCXw=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="WiimoteLib\WiimoteLib.csproj" size="7464">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>sqpj5OCtG942vMlVE/iaBHKeRWQ=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="WiimoteLib\WiimoteLib.csproj.user" size="168">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>kiSGqZhiEdoONSNypNAC8dIWASI=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="WiimoteWhiteboard.exe.config" size="74">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>XshrqJbLMwJ7FM1jR7BQZyNqypc=</dsig:DigestValue>
+    </hash>
+  </file>
+<publisherIdentity name="CN=STONE\Johnny Lee" issuerKeyHash="fa53602b52e898e68b5b4344842d208e5261439a" /><Signature Id="StrongNameSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>v6hBJLYk54XTzgc9cdPi3mvzz1Q=</DigestValue></Reference></SignedInfo><SignatureValue>jcl2Zf7ij8hmXQh0rW5bTXFT104nHcbimE8S59RbwztAZIIYWb8EanqneuUaynJhBhe0uIvK/I9w8MPlGCWt2p1P2cV9s2Seg7CgONFjyZFPLmFtVe+hB4qQJNwrw3BSOTQeAdoOmAD58js1LMk4YqGCVyKL/AMALR23y6WEMSo=</SignatureValue><KeyInfo Id="StrongNameKeyInfo"><KeyValue><RSAKeyValue><Modulus>uK/DKsus5S517Nx8TD2kq3eAS5G803duiBl2wU0cVp1vui+jQ9hksZOU+rkr5Mc5FPRLPyqIpewV5x2QQzaS67iqA0CPOYVoTDCTD6Vhzb0AU4vQrPkXyB7rzGQGDHjUu+RTX1bNwr4XVJZ0VYCEWCZteHf2gNufdGYtbsAi4xM=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><msrel:RelData xmlns:msrel="http://schemas.microsoft.com/windows/rel/2005/reldata"><r:license xmlns:r="urn:mpeg:mpeg21:2003:01-REL-R-NS" xmlns:as="http://schemas.microsoft.com/windows/pki/2005/Authenticode"><r:grant><as:ManifestInformation Hash="54cff36bdee2d3713d07ced385e724b62441a8bf" Description="" Url=""><as:assemblyIdentity name="WiimoteWhiteboard.exe" version="0.2.0.0" publicKeyToken="6bd5277f9890ba81" language="neutral" processorArchitecture="msil" type="win32" /></as:ManifestInformation><as:SignedBy /><as:AuthenticodePublisher><as:X509SubjectName>CN=STONE\Johnny Lee</as:X509SubjectName></as:AuthenticodePublisher></r:grant><r:issuer><Signature Id="AuthenticodeSignature" xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1" /><Reference URI=""><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" /><DigestValue>cTkDiQxC7aQ5eJ7whyq3Wg7LavI=</DigestValue></Reference></SignedInfo><SignatureValue>GBpIiqIk87S2l0iZ9EvbCHQNAwS5vAh8QOK3xgRNPJSo3UE40K8YvVio3GXKLvbG19/o/Ph/tzaJQeeo5a3DtIYoEbAsvsBMlZr2/KBJ22yD7ldddZAmtxJSE+kTgWWJi1snpOYx6g2bSI8ZE8hPNyjrjVtoLiyLni72ATEb0mM=</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>uK/DKsus5S517Nx8TD2kq3eAS5G803duiBl2wU0cVp1vui+jQ9hksZOU+rkr5Mc5FPRLPyqIpewV5x2QQzaS67iqA0CPOYVoTDCTD6Vhzb0AU4vQrPkXyB7rzGQGDHjUu+RTX1bNwr4XVJZ0VYCEWCZteHf2gNufdGYtbsAi4xM=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>MIIB0TCCAT6gAwIBAgIQG7oxx3J+z7FIObZPdeOx0jAJBgUrDgMCHQUAMCsxKTAnBgNVBAMeIABTAFQATwBOAEUAXABKAG8AaABuAG4AeQAgAEwAZQBlMB4XDTA4MDMyNzIwNTIwMFoXDTA5MDMyODAyNTIwMFowKzEpMCcGA1UEAx4gAFMAVABPAE4ARQBcAEoAbwBoAG4AbgB5ACAATABlAGUwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALivwyrLrOUudezcfEw9pKt3gEuRvNN3bogZdsFNHFadb7ovo0PYZLGTlPq5K+THORT0Sz8qiKXsFecdkEM2kuu4qgNAjzmFaEwwkw+lYc29AFOL0Kz5F8ge68xkBgx41LvkU19WzcK+F1SWdFWAhFgmbXh39oDbn3RmLW7AIuMTAgMBAAEwCQYFKw4DAh0FAAOBgQBoV3RoxmrealRMHltxfeaGLIji3snBzf056DNiaWq+9mjdfnOBK7Zddz3ioofPlqazlnkfRpQLz4ZmoD1AK/GG33uFaQ6xOnnXYe1h2ZcMAOa/f/FQddllnRSm9ng0k5zZUTqxuhynimvzQq0MkwCZBom5pK6hRGd8SJ+XSb5D8Q==</X509Certificate></X509Data></KeyInfo></Signature></r:issuer></r:license></msrel:RelData></KeyInfo></Signature></asmv1:assembly>

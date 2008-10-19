@@ -1,0 +1,17 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ReferencePath>c:\microsoft robotics studio (1.0)\bin;c:\microsoft robotics studio (1.0)\bin\services;c:\windows\microsoft.net\framework\v2.0.50727</ReferencePath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartWorkingDirectory>C:\Microsoft Robotics Studio (1.0)</StartWorkingDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Microsoft Robotics Studio (1.0)\bin\dsshost.exe</StartProgram>
+    <StartArguments>-port:50000 -tcpport:50001 -manifest:"../Projects/Personal/Wiimote/WiimoteMSRS/Proxy/Wiimote.Y2007.M06.proxy.manifest.xml"</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <StartWorkingDirectory>C:\Microsoft Robotics Studio (1.0)</StartWorkingDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Microsoft Robotics Studio (1.0)\bin\dsshost.exe</StartProgram>
+    <StartArguments>-port:50000 -tcpport:50001 -manifest:"../Projects/Personal/Wiimote/WiimoteMSRS/Proxy/Wiimote.Y2007.M06.proxy.manifest.xml"</StartArguments>
+  </PropertyGroup>
+</Project>

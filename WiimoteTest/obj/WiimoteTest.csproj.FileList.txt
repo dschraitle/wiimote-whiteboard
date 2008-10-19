@@ -1,0 +1,10 @@
+bin\Debug\WiimoteTest.exe
+bin\Debug\WiimoteTest.pdb
+bin\Debug\WiimoteLib.dll
+bin\Debug\WiimoteLib.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\WiimoteTest.Form1.resources
+obj\Debug\WiimoteTest.Properties.Resources.resources
+obj\Debug\WiimoteTest.csproj.GenerateResource.Cache
+obj\Debug\WiimoteTest.exe
+obj\Debug\WiimoteTest.pdb
