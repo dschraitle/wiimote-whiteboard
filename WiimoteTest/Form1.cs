@@ -286,7 +286,11 @@ namespace WiimoteWhiteboard
         public Form2 form2 = new Form2();
         Mutex mut = new Mutex();
         const int ACCELDATA = 50;
+        byte[] xaccel = new byte[ACCELDATA];
         byte[] yaccel = new byte[ACCELDATA];
+        byte[] zaccel = new byte[ACCELDATA];
+        string motions = "";
+        string znums = "";
 
 		public Form1()
 		{
@@ -617,19 +621,31 @@ namespace WiimoteWhiteboard
                 WiimoteState ws = args.WiimoteState;
 
                 //draw battery value on GUI
-                for(int i = ACCELDATA-2; i>=0; i--)
-                    yaccel[i+1]=yaccel[i];
+                for (int i = ACCELDATA - 2; i >= 0; i--)
+                {
+                    xaccel[i + 1] = xaccel[i];
+                    yaccel[i + 1] = yaccel[i];
+                    zaccel[i + 1] = zaccel[i];
+                }
+                xaccel[0] = ws.AccelState.RawX;
                 yaccel[0] = ws.AccelState.RawY;
+                zaccel[0] = ws.AccelState.RawZ;
+                znums += ws.AccelState.RawZ + " ";
                 xlbl.Text = ws.AccelState.RawX.ToString();
                 ylbl.Text = ws.AccelState.RawY.ToString();
                 zlbl.Text = ws.AccelState.RawZ.ToString();
-           //         Application.DoEvents();
                 BeginInvoke((MethodInvoker)delegate() { pbBattery2.Value = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery); });
                 float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
                 BeginInvoke((MethodInvoker)delegate() { lblBattery2.Text = f.ToString("F"); });
 
-                bool ypos = checkposbump(ref yaccel);
-                bool yneg = checknegbump(ref yaccel);
+                bool xpos = checkposbump(ref xaccel, "X");
+                bool xneg = checknegbump(ref xaccel, "X");
+                bool ypos = checkposbump(ref yaccel, "Y");
+                bool yneg = checknegbump(ref yaccel, "Y");
+                bool zpos = checkposbump(ref zaccel, "Z");
+                bool zneg = checknegbump(ref zaccel, "Z");
+                if(motions.Contains("XPZPXNZN"))
+                    SendKeys.SendWait("you made a circle");
 
                 //when shift button is pressed, perform these functions
                 if (ws.ButtonState.B)
@@ -1027,6 +1043,9 @@ namespace WiimoteWhiteboard
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e)
 		{
+            TextWriter t = new StreamWriter("dump.txt");
+            t.WriteLine(motions);
+            t.Close();
             //disconnect the wiimote
             wm.Disconnect();
             if (wms.Count > 1)
@@ -1103,48 +1122,42 @@ namespace WiimoteWhiteboard
             form2.Focus();
         }
 
-        private bool checkposbump(ref byte[] temp){
-            string direction = checkdir(ref temp);
-            if (direction == "positive")
-                return true;
-            return false;
-        }
-
-        private bool checknegbump(ref byte[] temp)
+        private bool checkposbump(ref byte[] temp, string c)
         {
-            string direction = checkdir(ref temp);
-            if (direction == "negative")
-                return true;
-            return false;
-        }
-
-        private string checkdir(ref byte[] temp)
-        {
-            int min=256;
-            int max=0;
-            if (int.Parse(temp[0].ToString()) < 105)
-                {
-                    foreach (byte b in temp)
-                        if (int.Parse(b.ToString()) > max)
-                            max = int.Parse(b.ToString());
-                    if (max > 150)
-                    {
-                        temp = new byte[ACCELDATA];
-                        return "negative";
-                    }
-                }
-            if (int.Parse(temp[0].ToString()) > 150)
+            int min = 256;
+            if (int.Parse(temp[0].ToString()) > 150 && temp[ACCELDATA - 1] > 10)
             {
                 foreach (byte b in temp)
                     if (int.Parse(b.ToString()) < min)
                         min = int.Parse(b.ToString());
-                if (min < 105)
+                if (int.Parse(temp[0].ToString()) - min > 50)
                 {
                     temp = new byte[ACCELDATA];
-                    return "positive";
+                    label6.Text = c + "P";
+                    motions += c + "P";
+                    return true;
                 }
             }
-            return "nomotion";
+            return false;
+        }
+
+        private bool checknegbump(ref byte[] temp, string c)
+        {
+            int max = 0;
+            if (int.Parse(temp[0].ToString()) < 105 && temp[ACCELDATA-1] > 10)
+            {
+                foreach (byte b in temp)
+                    if (int.Parse(b.ToString()) > max)
+                        max = int.Parse(b.ToString());
+                if (max - int.Parse(temp[0].ToString()) > 50)
+                {
+                    temp = new byte[ACCELDATA];
+                    label6.Text = c + "N";
+                    motions+= c + "N";
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void setSmoothing(int smoothing)

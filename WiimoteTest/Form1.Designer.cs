@@ -50,6 +50,7 @@ namespace WiimoteWhiteboard
             this.label1 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.lblSmoothing = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -278,11 +279,20 @@ namespace WiimoteWhiteboard
             this.lblSmoothing.TabIndex = 52;
             this.lblSmoothing.Text = "Smoothing: ";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(23, 199);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 13);
+            this.label6.TabIndex = 53;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(282, 207);
+            this.ClientSize = new System.Drawing.Size(282, 239);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.lblSmoothing);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.groupBox1);
@@ -331,6 +341,7 @@ namespace WiimoteWhiteboard
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label lblSmoothing;
+        private System.Windows.Forms.Label label6;
 	}
 }
 
