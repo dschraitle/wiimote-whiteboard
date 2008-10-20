@@ -152,41 +152,61 @@ namespace WiimoteWhiteboard
         public const int KEYEVENTF_KEYUP = 0x02;
         #endregion
 
+        const int NUMBOXES = 13;
         public object[] items = new object[] { "None", "Ctrl", "Alt", "Shift", "Tab", "Enter", "Esc", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "Home", "End", "Delete", "PgDown", "PgUp", "Insert", "PrtScrn", "Backspace", "Space", "LeftClick", "RightClick", "Copy", "Paste", "DblClick", "Hover", "Play", "Pause", "Play/Pause", "Stop", "Prev Track", "Next Track", "Vol Up", "Vol Down", "Vol Mute", "Custom"};
         //{B, A, Up, Down, Left, Right, Home, Minus, Plus, 1, 2, ypos, yneg}
         public int[] regitems = new int[] { 0, 25, 7, 8, 9, 10, 5, 22, 23, 0, 0, 0, 0};   //default indexes
-        public int[] shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};  
-        public int[] prevselindex;
-        public string[] custom = new string[13];
+        public int[] shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        public int[] prevselindex = new int[NUMBOXES];
+        public int[] regprevselindex = new int[NUMBOXES];
+        public int[] shiftprevselindex = new int[NUMBOXES];
+        public string[] custom = new string[NUMBOXES];
+        public string[] regcustom = new string[NUMBOXES];
+        public string[] shiftcustom = new string[NUMBOXES];
         public ComboBox[] boxes;
         public bool start = true;
-        string[] registryvals = new string[] { "boxb", "boxa", "boxup", "boxdown", "boxleft", "boxright", "boxhome", "boxminus", "boxplus", "box1", "box2", "ypos", "yneg" };
-        string[] registryshiftvals = new string[] { "shiftboxb", "shiftboxa", "shiftboxup", "shiftboxdown", "shiftboxleft", "shiftboxright", "shiftboxhome", "shiftboxminus", "shiftboxplus", "shiftbox1", "shiftbox2", "shiftypos", "shiftyneg" };
+        public bool changeshift = false;
 
         public Form2()
         {
             InitializeComponent();
             boxes = new ComboBox[] {boxb, boxa, boxup, boxdown, boxleft, boxright, boxhome, boxminus, boxplus, box1, box2, ypos, yneg };
-            prevselindex = new int[items.Length + 1];
 
             //creates item list for all boxes
-            for (int i = 1; i <= 12; i++) boxes[i].Items.AddRange(items);
+            for (int i = 1; i <= NUMBOXES-1; i++) boxes[i].Items.AddRange(items);
 
             //load data from registry
             try
             {
+                for (int i = 0; i <= NUMBOXES - 1; i++)
+                {
+                    regcustom[i] = "";
+                    shiftcustom[i] = "";
+                }
                 RegistryKey ourkey;
                 ourkey = Registry.Users;
                 ourkey = ourkey.OpenSubKey(@".DEFAULT\Software\Schraitle\Whiteboard");
-                for(int i=0; i<=12;i++) regitems[i] = (int)ourkey.GetValue(registryvals[i]);
-                for (int i = 1; i <= 12; i++) shiftitems[i] = (int)ourkey.GetValue(registryshiftvals[i]);
+                for (int i = 1; i <= NUMBOXES-1; i++) regitems[i] = (int)ourkey.GetValue(boxes[i].Name);
+                for (int i = 1; i <= NUMBOXES - 1; i++) regcustom[i] = (string)ourkey.GetValue(boxes[i].Name+"custom");
+                for (int i = 1; i <= NUMBOXES - 1; i++) shiftitems[i] = (int)ourkey.GetValue("shift" + boxes[i].Name);
+                for (int i = 1; i <= NUMBOXES - 1; i++) shiftcustom[i] = (string)ourkey.GetValue("shift" + boxes[i].Name + "custom");           
             }
             catch (Exception x) { x.Message.ToString(); }
 
             //sets indexes of boxes
-            int[] saveo = regitems;
             boxb.SelectedIndex = 0;
-            for (int i = 1; i <= 12; i++) boxes[i].SelectedIndex = saveo[i];
+            custom = regcustom;
+            for (int i = 1; i <= NUMBOXES-1; i++)
+            {
+                if (regitems[i] == 35)
+                    {
+                        boxes[i].Items.RemoveAt(35);
+                        boxes[i].Items.Insert(35, regcustom[i]);
+                    }
+                boxes[i].SelectedIndex = regitems[i];
+            }
+            prevselindex = regitems;
+            regprevselindex = regitems;
 
             start = false;
         }
@@ -201,13 +221,16 @@ namespace WiimoteWhiteboard
             regsave();
         }
         //saves data to the registry
-        private void regsave()   
+        private void regsave()
         {
+            getstates(boxb.SelectedIndex == 1);
             RegistryKey ourkey = Registry.Users;
             ourkey = ourkey.CreateSubKey(@".DEFAULT\Software\Schraitle\Whiteboard");
             ourkey.OpenSubKey(@".DEFAULT\Software\Schraitle\Whiteboard", true);
-            for (int i = 0; i <= 12; i++) ourkey.SetValue(registryvals[i], regitems[i]);
-            for (int i = 1; i <= 12; i++) ourkey.SetValue(registryshiftvals[i], shiftitems[i]);
+            for (int i = 0; i <= NUMBOXES - 1; i++) ourkey.SetValue(boxes[i].Name, regitems[i]);
+            for (int i = 0; i <= NUMBOXES - 1; i++) ourkey.SetValue(boxes[i].Name + "custom", regcustom[i]);
+            for (int i = 1; i <= NUMBOXES - 1; i++) ourkey.SetValue("shift" + boxes[i].Name, shiftitems[i]);
+            for (int i = 1; i <= NUMBOXES - 1; i++) ourkey.SetValue("shift" + boxes[i].Name + "custom", shiftcustom[i]);
             ourkey.Close();
         }
 
@@ -221,9 +244,9 @@ namespace WiimoteWhiteboard
                 sw = File.CreateText(svfl.FileName);
                 sw.WriteLine(regitems[0]);
                 sw.WriteLine(regitems[1]);
-                for (int i = 2; i <= 12; i++) sw.WriteLine(regitems[i]);
+                for (int i = 2; i <= 10; i++) sw.WriteLine(regitems[i]);
                 for(int i = 0; i < 12; i++) sw.WriteLine("");   //12 is the number of lines written by wiimote remote saves
-                for (int i = 1; i <= 12; i++) sw.WriteLine(shiftitems[i]);
+                for (int i = 1; i <= 10; i++) sw.WriteLine(shiftitems[i]);
                 sw.Close();
             }
         }
@@ -240,9 +263,9 @@ namespace WiimoteWhiteboard
                     sr = File.OpenText(opfl.FileName);
                     sr.ReadLine();
                     regitems[1] = int.Parse(sr.ReadLine());
-                    for (int i = 2; i <= 12; i++) regitems[i] = int.Parse(sr.ReadLine());
+                    for (int i = 2; i <= 10; i++) regitems[i] = int.Parse(sr.ReadLine());
                     for (int i = 0; i < 12; i++) sr.ReadLine();
-                    for (int i = 1; i <= 12; i++) shiftitems[i] = int.Parse(sr.ReadLine());
+                    for (int i = 1; i <= 10; i++) shiftitems[i] = int.Parse(sr.ReadLine());
                     sr.Close();
                 }
                 catch (Exception x) { x.Message.ToString(); }
@@ -255,7 +278,7 @@ namespace WiimoteWhiteboard
 
         void customize(ComboBox box, int i) //function to handle specific commands for each button
         {
-            if (box.SelectedIndex == 35 && prevselindex[i] != 35 && !start)
+            if (box.SelectedIndex == 35 && prevselindex[i] != 35 && !start && !changeshift)
             {
                 box.Items.RemoveAt(35);
                 box.Items.Insert(35, tb1.Text);
@@ -263,10 +286,11 @@ namespace WiimoteWhiteboard
                 prevselindex[i] = 35;
                 box.SelectedItem = tb1.Text;
             }
-            if (box.SelectedIndex != 23 && prevselindex[i] == 23)
+            if (box.SelectedIndex != 35 && prevselindex[i] == 35)
             {
                 box.Items.RemoveAt(35);
                 box.Items.Insert(35, "Custom");
+                custom[i] = "";
             }
 
             if (boxb.SelectedIndex == 0) regitems[i] = box.SelectedIndex;   //sets values of the saved array of selected indexes
@@ -347,18 +371,55 @@ namespace WiimoteWhiteboard
 
         public void setstates(bool shifted)   //sets the selected indexes of the boxes for shifted or not shifted
         {
-            if (!shifted)for (int i = 1; i < regitems.Length; i++) boxes[i].SelectedIndex = regitems[i];
-            else for (int i = 1; i < shiftitems.Length; i++) boxes[i].SelectedIndex = shiftitems[i];
+            if (!shifted)
+            {  
+                prevselindex = regprevselindex;
+                custom = regcustom;
+                for (int i = 1; i < NUMBOXES-1; i++)
+                {
+                    if (regitems[i] == 35)
+                    {
+                        boxes[i].Items.RemoveAt(35);
+                        boxes[i].Items.Insert(35, custom[i]);
+                    } 
+                    boxes[i].SelectedIndex = regitems[i];
+                }
+            }
+            else
+            {
+                prevselindex = shiftprevselindex;
+                custom = shiftcustom;
+                for (int i = 1; i < NUMBOXES - 1; i++)
+                {
+                    if (shiftitems[i] == 35)
+                    {
+                        boxes[i].Items.RemoveAt(35);
+                        boxes[i].Items.Insert(35, custom[i]);
+                    }
+                    boxes[i].SelectedIndex = shiftitems[i];
+                }
+            }
         }
 
-        private void getstates(bool shift)  //gets the selected indexes of the boxes and saves them to the saving arrays
+        private void getstates(bool shifted)  //gets the selected indexes of the boxes and saves them to the saving arrays
         {
-            if (!shift)for (int i = 1; i < regitems.Length; i++) regitems[i] = boxes[i].SelectedIndex;
-            else for (int i = 1; i < shiftitems.Length; i++) shiftitems[i] = boxes[i].SelectedIndex;
+            if (!shifted)
+            {
+                for (int i = 1; i < regitems.Length; i++) regitems[i] = boxes[i].SelectedIndex;
+                regprevselindex = prevselindex;
+                regcustom = custom;
+            }
+            else
+            {
+                for (int i = 1; i < shiftitems.Length; i++) shiftitems[i] = boxes[i].SelectedIndex;
+                shiftprevselindex = prevselindex;
+                shiftcustom = custom;
+            }
         }
 
         private void boxb_SelectedIndexChanged(object sender, EventArgs e)
         {
+            changeshift = true;
             if (!start)
             {
                 if (boxb.SelectedIndex == 0)    //sets the selected indexes of all other boxes depending on the state of boxb (shifted/not shifted)
@@ -372,10 +433,12 @@ namespace WiimoteWhiteboard
                     setstates(true);
                 }
             }
+            changeshift = false;
         }
 
         private void defaultpreset_Click(object sender, EventArgs e)  //resets saved arrays to default state and updates selected indexes of boxes
         {
+            boxb.SelectedIndex = 0;
             regitems = new int[] { 0, 25, 7, 8, 9, 10, 5, 22, 23, 0, 0, 0, 0 };
             shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
             setstates(false);
@@ -383,6 +446,7 @@ namespace WiimoteWhiteboard
 
         private void mediapreset_Click(object sender, EventArgs e)
         {
+            boxb.SelectedIndex = 0;
             regitems = new int[] { 0, 28, 32, 33, 0, 0, 29, 30, 31, 0, 0, 0, 0 };
             shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 19, 5, 0, 0 };
             setstates(false);
@@ -390,10 +454,12 @@ namespace WiimoteWhiteboard
 
         private void gomPlayer_Click(object sender, EventArgs e)
         {
-            regitems = new int[] { 0, 19, 7, 8, 9, 10, 0, 15, 14, 0, 5, 0, 0 };
-            shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            boxb.SelectedIndex = 0;
+            regitems = new int[] { 0, 28, 7, 8, 9, 10, 5, 15, 14, 35, 35, 0, 0 };
+            shiftitems = new int[] { 0, 24, 35, 35, 35, 35, 0, 0, 0, 0, 0, 0, 0 };
+            regcustom = new string[] { "", "", "", "", "", "", "", "", "", "!>", "!<", "", "" };
+            shiftcustom = new string[] { "", "", "^{up}", "^{down}", "^{left}", "^{right}", "", "", "", "", "", "", "" };
             setstates(false);
         }
-
       }
 }

@@ -280,6 +280,7 @@ namespace WiimoteWhiteboard
 
         bool ledsfound = false;
         bool clicked = false;
+        bool shifting;
         bool[] done = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false, false };
         //end keyboard and mouse input emulation variables----------------------------------------
 
@@ -646,10 +647,11 @@ namespace WiimoteWhiteboard
                 bool zneg = checknegbump(ref zaccel, "Z");
                 if(motions.Contains("XPZPXNZN"))
                     SendKeys.SendWait("you made a circle");
-
+                
                 //when shift button is pressed, perform these functions
                 if (ws.ButtonState.B)
                 {
+                    shifting = true;
                     setclick(MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP);
                     if (ws.ButtonState.A) { if (!done[1]) translate(form2.shiftitems[1], true, 1); }
                     else if (ws.ButtonState.Up){ if (!done[2]) translate(form2.shiftitems[2], true, 2);}
@@ -664,6 +666,7 @@ namespace WiimoteWhiteboard
                     else if (ypos) { if (!done[11]) translate(form2.shiftitems[11], true, 11); }
                     else if (yneg) { if (!done[12]) translate(form2.shiftitems[12], true, 12); }
                     else setclick(MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP);
+                    shifting = false;
                 }
                 else
                 {
@@ -927,7 +930,16 @@ namespace WiimoteWhiteboard
             if (i == 32) if (down) { SendMessage(GetForegroundWindow(), WM_APPCOMMAND, IntPtr.Zero, new IntPtr(APPCOMMAND_VOLUME_UP)); done[button] = true; } else { done[button] = false; }
             if (i == 33) if (down) { SendMessage(GetForegroundWindow(), WM_APPCOMMAND, IntPtr.Zero, new IntPtr(APPCOMMAND_VOLUME_DOWN)); done[button] = true; } else { done[button] = false; }
             if (i == 34) if (down) { SendMessage(GetForegroundWindow(), WM_APPCOMMAND, IntPtr.Zero, new IntPtr(APPCOMMAND_VOLUME_MUTE)); done[button] = true; } else { done[button] = false; }
-            if (i == 35) if (down) { SendKeys.SendWait(form2.custom[button]); done[button] = true; } else { done[button] = false; }
+            if (i == 35)
+                if (down)
+                {
+                    if (shifting)
+                        SendKeys.SendWait(form2.shiftcustom[button]);
+                    else
+                        SendKeys.SendWait(form2.regcustom[button]);
+                    done[button] = true;
+                }
+                else { done[button] = false; }
         }
 
         public void loadCalibrationData()
@@ -946,8 +958,9 @@ namespace WiimoteWhiteboard
                 // close the stream
                 tr.Close();
             }
-            catch (Exception x)
+            catch (Exception x) 
             {
+                x.ToString();
                 //no prexsting calibration
                 return;
             }
