@@ -77,7 +77,7 @@ namespace WiimoteWhiteboard
         public const int APPCOMMAND_BROWSER_REFRESH = 196608;
         public const int WM_APPCOMMAND = 0x0319;
         public const int HWND_BROADCAST = 0xFFFF;
-        //declare consts for key scan codes
+        //declare consts for virtual key scan codes http://msdn.microsoft.com/en-us/library/ms927178.aspx
         public const byte VK_LBUTTON = 0x01;
         public const byte VK_RBUTTON = 0x02;
         public const byte VK_CANCEL = 0x03;
@@ -110,46 +110,6 @@ namespace WiimoteWhiteboard
         public const byte VK_LWIN = 0x5B;
         public const byte VK_RWIN = 0x5C;
         public const byte VK_APPS = 0x5D;
-        public const byte VK_NUMPAD0 = 0x60;
-        public const byte VK_NUMPAD1 = 0x61;
-        public const byte VK_NUMPAD2 = 0x62;
-        public const byte VK_NUMPAD3 = 0x63;
-        public const byte VK_NUMPAD4 = 0x64;
-        public const byte VK_NUMPAD5 = 0x65;
-        public const byte VK_NUMPAD6 = 0x66;
-        public const byte VK_NUMPAD7 = 0x67;
-        public const byte VK_NUMPAD8 = 0x68;
-        public const byte VK_NUMPAD9 = 0x69;
-        public const byte VK_MULTIPLY = 0x6A;
-        public const byte VK_ADD = 0x6B;
-        public const byte VK_SEPARATOR = 0x6C;
-        public const byte VK_SUBTRACT = 0x6D;
-        public const byte VK_DECIMAL = 0x6E;
-        public const byte VK_DIVIDE = 0x6F;
-        public const byte VK_F1 = 0x70;
-        public const byte VK_F2 = 0x71;
-        public const byte VK_F3 = 0x72;
-        public const byte VK_F4 = 0x73;
-        public const byte VK_F5 = 0x74;
-        public const byte VK_F6 = 0x75;
-        public const byte VK_F7 = 0x76;
-        public const byte VK_F8 = 0x77;
-        public const byte VK_F9 = 0x78;
-        public const byte VK_F10 = 0x79;
-        public const byte VK_F11 = 0x7A;
-        public const byte VK_F12 = 0x7B;
-        public const byte VK_F13 = 0x7C;
-        public const byte VK_F14 = 0x7D;
-        public const byte VK_F15 = 0x7E;
-        public const byte VK_F16 = 0x7F;
-        public const byte VK_F17 = 0x80;
-        public const byte VK_F18 = 0x81;
-        public const byte VK_F19 = 0x82;
-        public const byte VK_F20 = 0x83;
-        public const byte VK_F21 = 0x84;
-        public const byte VK_F22 = 0x85;
-        public const byte VK_F23 = 0x86;
-        public const byte VK_F24 = 0x87;
         public const byte VK_NUMLOCK = 0x90;
         public const byte VK_SCROLL = 0x91;
         public const byte VK_LSHIFT = 0xA0;
@@ -158,42 +118,6 @@ namespace WiimoteWhiteboard
         public const byte VK_RCONTROL = 0xA3;
         public const byte VK_LMENU = 0xA4;
         public const byte VK_RMENU = 0xA5;
-        public const byte VK_0 = 0x30;
-        public const byte VK_1 = 0x31;
-        public const byte VK_2 = 0x32;
-        public const byte VK_3 = 0x33;
-        public const byte VK_4 = 0x34;
-        public const byte VK_5 = 0x35;
-        public const byte VK_6 = 0x36;
-        public const byte VK_7 = 0x37;
-        public const byte VK_8 = 0x38;
-        public const byte VK_9 = 0x39;
-        public const byte VK_A = 0x41;
-        public const byte VK_B = 0x42;
-        public const byte VK_C = 0x43;
-        public const byte VK_D = 0x44;
-        public const byte VK_E = 0x45;
-        public const byte VK_F = 0x46;
-        public const byte VK_G = 0x47;
-        public const byte VK_H = 0x48;
-        public const byte VK_I = 0x49;
-        public const byte VK_J = 0x4A;
-        public const byte VK_K = 0x4B;
-        public const byte VK_L = 0x4C;
-        public const byte VK_M = 0x4D;
-        public const byte VK_N = 0x4E;
-        public const byte VK_O = 0x4F;
-        public const byte VK_P = 0x50;
-        public const byte VK_Q = 0x51;
-        public const byte VK_R = 0x52;
-        public const byte VK_S = 0x53;
-        public const byte VK_T = 0x54;
-        public const byte VK_U = 0x55;
-        public const byte VK_V = 0x56;
-        public const byte VK_W = 0x57;
-        public const byte VK_X = 0x58;
-        public const byte VK_Y = 0x59;
-        public const byte VK_Z = 0x5A;
         public const int KEYEVENTF_EXTENDEDKEY = 0x01;
         public const int KEYEVENTF_KEYUP = 0x02;
         #endregion
@@ -281,15 +205,15 @@ namespace WiimoteWhiteboard
         bool ledsfound = false;
         bool clicked = false;
         bool shifting;
-        bool[] done = new bool[] { false, false, false, false, false, false, false, false, false, false, false, false, false };
+        bool[] done;
         //end keyboard and mouse input emulation variables----------------------------------------
 
-        public Form2 form2 = new Form2();
+        public Form2 form2;
         Mutex mut = new Mutex();
         const int ACCELDATA = 50;
-        byte[] xaccel = new byte[ACCELDATA];
-        byte[] yaccel = new byte[ACCELDATA];
-        byte[] zaccel = new byte[ACCELDATA];
+        float[] xaccel = new float[ACCELDATA];
+        float[] yaccel = new float[ACCELDATA];
+        float[] zaccel = new float[ACCELDATA];
         string motions = "";
         string znums = "";
 
@@ -297,13 +221,14 @@ namespace WiimoteWhiteboard
 		{
             screenWidth = Screen.GetBounds(this).Width;
             screenHeight = Screen.GetBounds(this).Height;
-            form2.Location = new Point(this.Location.X + 149, this.Location.Y);
             InitializeComponent();
 
             for (int i = 0; i < smoothingBufferSize; i++)
                 smoothingBuffer[i] = new PointF();
 
             setSmoothing(smoothingAmount);
+            form2 = new Form2();
+            form2.Location = new Point(this.Location.X + 149, this.Location.Y);
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -350,6 +275,8 @@ namespace WiimoteWhiteboard
                 //this.Close();
             }
             loadCalibrationData();
+            done = new bool[Form2.NUMBOXES];
+            for (int i = 0; i < Form2.NUMBOXES - 1; i++) done[i] = false;
 		}
 
         PointF getSmoothedCursor(int amount)
@@ -628,23 +555,23 @@ namespace WiimoteWhiteboard
                     yaccel[i + 1] = yaccel[i];
                     zaccel[i + 1] = zaccel[i];
                 }
-                xaccel[0] = ws.AccelState.RawX;
-                yaccel[0] = ws.AccelState.RawY;
-                zaccel[0] = ws.AccelState.RawZ;
-                znums += ws.AccelState.RawZ + " ";
-                xlbl.Text = ws.AccelState.RawX.ToString();
-                ylbl.Text = ws.AccelState.RawY.ToString();
-                zlbl.Text = ws.AccelState.RawZ.ToString();
+                xaccel[0] = ws.AccelState.X;
+                yaccel[0] = ws.AccelState.Y;
+                zaccel[0] = ws.AccelState.Z;
+                znums += ws.AccelState.Z + " ";
+                xlbl.Text = ws.AccelState.X.ToString();
+                ylbl.Text = ws.AccelState.Y.ToString();
+                zlbl.Text = ws.AccelState.Z.ToString();
                 BeginInvoke((MethodInvoker)delegate() { pbBattery2.Value = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery); });
                 float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
                 BeginInvoke((MethodInvoker)delegate() { lblBattery2.Text = f.ToString("F"); });
 
-                bool xpos = checkposbump(ref xaccel, "X");
-                bool xneg = checknegbump(ref xaccel, "X");
-                bool ypos = checkposbump(ref yaccel, "Y");
-                bool yneg = checknegbump(ref yaccel, "Y");
-                bool zpos = checkposbump(ref zaccel, "Z");
-                bool zneg = checknegbump(ref zaccel, "Z");
+                //bool xpos = checkposbump(ref xaccel, "X");
+                //bool xneg = checknegbump(ref xaccel, "X");
+                //bool ypos = checkposbump(ref yaccel, "Y");
+                //bool yneg = checknegbump(ref yaccel, "Y");
+                //bool zpos = checkposbump(ref zaccel, "Z");
+                //bool zneg = checknegbump(ref zaccel, "Z");
                 if(motions.Contains("XPZPXNZN"))
                     SendKeys.SendWait("you made a circle");
                 
@@ -663,8 +590,8 @@ namespace WiimoteWhiteboard
                     else if (ws.ButtonState.Plus) { if (!done[8]) translate(form2.shiftitems[8], true, 8); }
                     else if (ws.ButtonState.One) { if (!done[9]) translate(form2.shiftitems[9], true, 9); }
                     else if (ws.ButtonState.Two) { if (!done[10]) translate(form2.shiftitems[10], true, 10); }
-                    else if (ypos) { if (!done[11]) translate(form2.shiftitems[11], true, 11); }
-                    else if (yneg) { if (!done[12]) translate(form2.shiftitems[12], true, 12); }
+                    //else if (ypos) { if (!done[11]) translate(form2.shiftitems[11], true, 11); }
+                    //else if (yneg) { if (!done[12]) translate(form2.shiftitems[12], true, 12); }
                     else setclick(MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP);
                     shifting = false;
                 }
@@ -746,19 +673,19 @@ namespace WiimoteWhiteboard
                     translate(form2.shiftitems[10], false, 10);}
                 lastWiiState2.ButtonState.Two = ws.ButtonState.Two;
 
-                if (!lastypos && ypos && !ws.ButtonState.B)
-                    translate(form2.regitems[11], true, 11);
-                if (lastypos && !ypos){
-                    translate(form2.regitems[11], false, 11);
-                    translate(form2.shiftitems[11], false, 11);}
-                lastypos = ypos;
+                //if (!lastypos && ypos && !ws.ButtonState.B)
+                //    translate(form2.regitems[11], true, 11);
+                //if (lastypos && !ypos){
+                //    translate(form2.regitems[11], false, 11);
+                //    translate(form2.shiftitems[11], false, 11);}
+                //lastypos = ypos;
 
-                if (!lastyneg && yneg && !ws.ButtonState.B)
-                    translate(form2.regitems[12], true, 12);
-                if (lastyneg && !yneg){
-                    translate(form2.regitems[12], false, 12);
-                    translate(form2.shiftitems[12], false, 12);}
-                lastyneg = yneg;
+                //if (!lastyneg && yneg && !ws.ButtonState.B)
+                //    translate(form2.regitems[12], true, 12);
+                //if (lastyneg && !yneg){
+                //    translate(form2.regitems[12], false, 12);
+                //    translate(form2.shiftitems[12], false, 12);}
+                //lastyneg = yneg;
                 mut.ReleaseMutex();
             }
         }
@@ -1125,8 +1052,6 @@ namespace WiimoteWhiteboard
         //shows the form for customizing button mappings
         private void custombutton_Click(object sender, EventArgs e)
         {
-            if (form2.boxb.SelectedIndex == 0) form2.setstates(false);
-            else form2.setstates(true);
             form2.Show();
         }
 
@@ -1135,17 +1060,17 @@ namespace WiimoteWhiteboard
             form2.Focus();
         }
 
-        private bool checkposbump(ref byte[] temp, string c)
+        private bool checkposbump(ref float[] temp, string c)
         {
-            int min = 256;
+            float min = 256;
             if (int.Parse(temp[0].ToString()) > 150 && temp[ACCELDATA - 1] > 10)
             {
-                foreach (byte b in temp)
+                foreach (float b in temp)
                     if (int.Parse(b.ToString()) < min)
                         min = int.Parse(b.ToString());
                 if (int.Parse(temp[0].ToString()) - min > 50)
                 {
-                    temp = new byte[ACCELDATA];
+                    temp = new float[ACCELDATA];
                     label6.Text = c + "P";
                     motions += c + "P";
                     return true;
@@ -1154,17 +1079,17 @@ namespace WiimoteWhiteboard
             return false;
         }
 
-        private bool checknegbump(ref byte[] temp, string c)
+        private bool checknegbump(ref float[] temp, string c)
         {
-            int max = 0;
+            float max = 0;
             if (int.Parse(temp[0].ToString()) < 105 && temp[ACCELDATA-1] > 10)
             {
-                foreach (byte b in temp)
+                foreach (float b in temp)
                     if (int.Parse(b.ToString()) > max)
                         max = int.Parse(b.ToString());
                 if (max - int.Parse(temp[0].ToString()) > 50)
                 {
-                    temp = new byte[ACCELDATA];
+                    temp = new float[ACCELDATA];
                     label6.Text = c + "N";
                     motions+= c + "N";
                     return true;

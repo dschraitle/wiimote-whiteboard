@@ -201,7 +201,7 @@ namespace WiimoteWhiteboard
             this.groupBox1.Controls.Add(this.checkBox3);
             this.groupBox1.Location = new System.Drawing.Point(150, 31);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(122, 108);
+            this.groupBox1.Size = new System.Drawing.Size(122, 107);
             this.groupBox1.TabIndex = 31;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "2nd Wiimote";
@@ -291,7 +291,7 @@ namespace WiimoteWhiteboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(282, 239);
+            this.ClientSize = new System.Drawing.Size(282, 205);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.lblSmoothing);
             this.Controls.Add(this.trackBar1);
