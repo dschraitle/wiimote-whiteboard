@@ -195,8 +195,6 @@ namespace WiimoteWhiteboard
         #endregion
         WiimoteState lastWiiState = new WiimoteState();//helps with event firing
         WiimoteState lastWiiState2 = new WiimoteState();
-        bool lastypos;
-        bool lastyneg;
 
         int mouseclickd = MOUSEEVENTF_LEFTDOWN;
         int mouseclicku = MOUSEEVENTF_LEFTUP;
@@ -211,11 +209,10 @@ namespace WiimoteWhiteboard
         public Form2 form2;
         Mutex mut = new Mutex();
         const int ACCELDATA = 50;
-        float[] xaccel = new float[ACCELDATA];
-        float[] yaccel = new float[ACCELDATA];
-        float[] zaccel = new float[ACCELDATA];
-        string motions = "";
-        string znums = "";
+        byte[] xaccel = new byte[ACCELDATA];
+        byte[] yaccel = new byte[ACCELDATA];
+        byte[] zaccel = new byte[ACCELDATA];
+        public string motions = "";
 
 		public Form1()
 		{
@@ -555,25 +552,24 @@ namespace WiimoteWhiteboard
                     yaccel[i + 1] = yaccel[i];
                     zaccel[i + 1] = zaccel[i];
                 }
-                xaccel[0] = ws.AccelState.X;
-                yaccel[0] = ws.AccelState.Y;
-                zaccel[0] = ws.AccelState.Z;
-                znums += ws.AccelState.Z + " ";
-                xlbl.Text = ws.AccelState.X.ToString();
-                ylbl.Text = ws.AccelState.Y.ToString();
-                zlbl.Text = ws.AccelState.Z.ToString();
+                xaccel[0] = ws.AccelState.RawX;
+                yaccel[0] = ws.AccelState.RawY;
+                zaccel[0] = ws.AccelState.RawZ;
+                xlbl.Text = ws.AccelState.RawX.ToString();
+                ylbl.Text = ws.AccelState.RawY.ToString();
+                zlbl.Text = ws.AccelState.RawZ.ToString();
+                if (form2.recording || form2.gesturing)
+                {
+                    form2.checkbump(ref xaccel, "X");
+                    form2.checkbump(ref yaccel, "Y");
+                    form2.checkbump(ref zaccel, "Z");
+                }
+
                 BeginInvoke((MethodInvoker)delegate() { pbBattery2.Value = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery); });
                 float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
                 BeginInvoke((MethodInvoker)delegate() { lblBattery2.Text = f.ToString("F"); });
 
-                //bool xpos = checkposbump(ref xaccel, "X");
-                //bool xneg = checknegbump(ref xaccel, "X");
-                //bool ypos = checkposbump(ref yaccel, "Y");
-                //bool yneg = checknegbump(ref yaccel, "Y");
-                //bool zpos = checkposbump(ref zaccel, "Z");
-                //bool zneg = checknegbump(ref zaccel, "Z");
-                if(motions.Contains("XPZPXNZN"))
-                    SendKeys.SendWait("you made a circle");
+                
                 
                 //when shift button is pressed, perform these functions
                 if (ws.ButtonState.B)
@@ -590,8 +586,6 @@ namespace WiimoteWhiteboard
                     else if (ws.ButtonState.Plus) { if (!done[8]) translate(form2.shiftitems[8], true, 8); }
                     else if (ws.ButtonState.One) { if (!done[9]) translate(form2.shiftitems[9], true, 9); }
                     else if (ws.ButtonState.Two) { if (!done[10]) translate(form2.shiftitems[10], true, 10); }
-                    //else if (ypos) { if (!done[11]) translate(form2.shiftitems[11], true, 11); }
-                    //else if (yneg) { if (!done[12]) translate(form2.shiftitems[12], true, 12); }
                     else setclick(MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP);
                     shifting = false;
                 }
@@ -867,6 +861,30 @@ namespace WiimoteWhiteboard
                     done[button] = true;
                 }
                 else { done[button] = false; }
+            if(i == 36)
+                if (down)
+                {
+                    form2.gesturing = true;
+                    form2.motions = "";
+                    form2.form3.label1.Text = "";
+                    form2.form3.label2.Text = "";
+                    form2.form3.Show();
+                    done[button] = true;
+                }
+                else
+                {
+                    form2.gesturing = false;
+                    form2.form3.Hide();
+                    form2.gesture = form2.form3.label1.Text;
+                    int ges = form2.getgesture();
+                    if (ges != -1)
+                    {
+                        translate(ges, true, 0);
+                        translate(ges, false, 0);
+                    }
+                    done[button] = false;
+                }
+                    
         }
 
         public void loadCalibrationData()
@@ -1058,44 +1076,6 @@ namespace WiimoteWhiteboard
         private void Form1_Activated(object sender, EventArgs e)
         {
             form2.Focus();
-        }
-
-        private bool checkposbump(ref float[] temp, string c)
-        {
-            float min = 256;
-            if (int.Parse(temp[0].ToString()) > 150 && temp[ACCELDATA - 1] > 10)
-            {
-                foreach (float b in temp)
-                    if (int.Parse(b.ToString()) < min)
-                        min = int.Parse(b.ToString());
-                if (int.Parse(temp[0].ToString()) - min > 50)
-                {
-                    temp = new float[ACCELDATA];
-                    label6.Text = c + "P";
-                    motions += c + "P";
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private bool checknegbump(ref float[] temp, string c)
-        {
-            float max = 0;
-            if (int.Parse(temp[0].ToString()) < 105 && temp[ACCELDATA-1] > 10)
-            {
-                foreach (float b in temp)
-                    if (int.Parse(b.ToString()) > max)
-                        max = int.Parse(b.ToString());
-                if (max - int.Parse(temp[0].ToString()) > 50)
-                {
-                    temp = new float[ACCELDATA];
-                    label6.Text = c + "N";
-                    motions+= c + "N";
-                    return true;
-                }
-            }
-            return false;
         }
 
         private void setSmoothing(int smoothing)

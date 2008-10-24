@@ -65,8 +65,11 @@ namespace WiimoteWhiteboard
             this.gomPlayer = new System.Windows.Forms.ToolStripMenuItem();
             this.tb1 = new System.Windows.Forms.TextBox();
             this.customlbl = new System.Windows.Forms.Label();
-            this.ypos = new System.Windows.Forms.ComboBox();
-            this.yneg = new System.Windows.Forms.ComboBox();
+            this.ges1 = new System.Windows.Forms.ComboBox();
+            this.gestb = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.recbutton = new System.Windows.Forms.Button();
+            this.ges1lbl = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.homepicture)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -75,7 +78,7 @@ namespace WiimoteWhiteboard
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(112, 44);
+            this.pictureBox1.Location = new System.Drawing.Point(114, 22);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(79, 326);
             this.pictureBox1.TabIndex = 0;
@@ -85,7 +88,7 @@ namespace WiimoteWhiteboard
             // 
             this.box2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.box2.FormattingEnabled = true;
-            this.box2.Location = new System.Drawing.Point(220, 303);
+            this.box2.Location = new System.Drawing.Point(222, 281);
             this.box2.Name = "box2";
             this.box2.Size = new System.Drawing.Size(77, 21);
             this.box2.TabIndex = 10;
@@ -95,7 +98,7 @@ namespace WiimoteWhiteboard
             // 
             this.alabel.AutoSize = true;
             this.alabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.alabel.Location = new System.Drawing.Point(1, 130);
+            this.alabel.Location = new System.Drawing.Point(3, 108);
             this.alabel.Name = "alabel";
             this.alabel.Size = new System.Drawing.Size(23, 24);
             this.alabel.TabIndex = 11;
@@ -105,7 +108,7 @@ namespace WiimoteWhiteboard
             // 
             this.pluslabel.AutoSize = true;
             this.pluslabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pluslabel.Location = new System.Drawing.Point(197, 203);
+            this.pluslabel.Location = new System.Drawing.Point(199, 181);
             this.pluslabel.Name = "pluslabel";
             this.pluslabel.Size = new System.Drawing.Size(21, 24);
             this.pluslabel.TabIndex = 12;
@@ -114,7 +117,7 @@ namespace WiimoteWhiteboard
             // homepicture
             // 
             this.homepicture.Image = ((System.Drawing.Image)(resources.GetObject("homepicture.Image")));
-            this.homepicture.Location = new System.Drawing.Point(192, 164);
+            this.homepicture.Location = new System.Drawing.Point(194, 142);
             this.homepicture.Name = "homepicture";
             this.homepicture.Size = new System.Drawing.Size(26, 26);
             this.homepicture.TabIndex = 13;
@@ -124,7 +127,7 @@ namespace WiimoteWhiteboard
             // 
             this.blabel.AutoSize = true;
             this.blabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.blabel.Location = new System.Drawing.Point(195, 133);
+            this.blabel.Location = new System.Drawing.Point(197, 111);
             this.blabel.Name = "blabel";
             this.blabel.Size = new System.Drawing.Size(22, 24);
             this.blabel.TabIndex = 14;
@@ -134,7 +137,7 @@ namespace WiimoteWhiteboard
             // 
             this.minuslabel.AutoSize = true;
             this.minuslabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.minuslabel.Location = new System.Drawing.Point(1, 180);
+            this.minuslabel.Location = new System.Drawing.Point(3, 158);
             this.minuslabel.Name = "minuslabel";
             this.minuslabel.Size = new System.Drawing.Size(26, 33);
             this.minuslabel.TabIndex = 15;
@@ -144,7 +147,7 @@ namespace WiimoteWhiteboard
             // 
             this.onelabel.AutoSize = true;
             this.onelabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.onelabel.Location = new System.Drawing.Point(1, 272);
+            this.onelabel.Location = new System.Drawing.Point(3, 250);
             this.onelabel.Name = "onelabel";
             this.onelabel.Size = new System.Drawing.Size(20, 24);
             this.onelabel.TabIndex = 16;
@@ -154,7 +157,7 @@ namespace WiimoteWhiteboard
             // 
             this.twolabel.AutoSize = true;
             this.twolabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.twolabel.Location = new System.Drawing.Point(195, 303);
+            this.twolabel.Location = new System.Drawing.Point(197, 281);
             this.twolabel.Name = "twolabel";
             this.twolabel.Size = new System.Drawing.Size(20, 24);
             this.twolabel.TabIndex = 17;
@@ -164,7 +167,7 @@ namespace WiimoteWhiteboard
             // 
             this.rightlabel.AutoSize = true;
             this.rightlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rightlabel.Location = new System.Drawing.Point(195, 71);
+            this.rightlabel.Location = new System.Drawing.Point(197, 49);
             this.rightlabel.Name = "rightlabel";
             this.rightlabel.Size = new System.Drawing.Size(21, 24);
             this.rightlabel.TabIndex = 18;
@@ -174,7 +177,7 @@ namespace WiimoteWhiteboard
             // 
             this.downlabel.AutoSize = true;
             this.downlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.downlabel.Location = new System.Drawing.Point(195, 98);
+            this.downlabel.Location = new System.Drawing.Point(197, 76);
             this.downlabel.Name = "downlabel";
             this.downlabel.Size = new System.Drawing.Size(19, 24);
             this.downlabel.TabIndex = 19;
@@ -184,7 +187,7 @@ namespace WiimoteWhiteboard
             // 
             this.uplabel.AutoSize = true;
             this.uplabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.uplabel.Location = new System.Drawing.Point(3, 58);
+            this.uplabel.Location = new System.Drawing.Point(5, 36);
             this.uplabel.Name = "uplabel";
             this.uplabel.Size = new System.Drawing.Size(19, 24);
             this.uplabel.TabIndex = 20;
@@ -194,7 +197,7 @@ namespace WiimoteWhiteboard
             // 
             this.leftlabel.AutoSize = true;
             this.leftlabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.leftlabel.Location = new System.Drawing.Point(3, 85);
+            this.leftlabel.Location = new System.Drawing.Point(5, 63);
             this.leftlabel.Name = "leftlabel";
             this.leftlabel.Size = new System.Drawing.Size(21, 24);
             this.leftlabel.TabIndex = 21;
@@ -208,7 +211,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxplus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxplus.FormattingEnabled = true;
-            this.boxplus.Location = new System.Drawing.Point(220, 206);
+            this.boxplus.Location = new System.Drawing.Point(222, 184);
             this.boxplus.Name = "boxplus";
             this.boxplus.Size = new System.Drawing.Size(77, 21);
             this.boxplus.TabIndex = 24;
@@ -218,7 +221,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxhome.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxhome.FormattingEnabled = true;
-            this.boxhome.Location = new System.Drawing.Point(220, 166);
+            this.boxhome.Location = new System.Drawing.Point(222, 144);
             this.boxhome.Name = "boxhome";
             this.boxhome.Size = new System.Drawing.Size(77, 21);
             this.boxhome.TabIndex = 25;
@@ -228,7 +231,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxdown.FormattingEnabled = true;
-            this.boxdown.Location = new System.Drawing.Point(220, 103);
+            this.boxdown.Location = new System.Drawing.Point(222, 81);
             this.boxdown.Name = "boxdown";
             this.boxdown.Size = new System.Drawing.Size(77, 21);
             this.boxdown.TabIndex = 26;
@@ -238,7 +241,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxright.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxright.FormattingEnabled = true;
-            this.boxright.Location = new System.Drawing.Point(220, 74);
+            this.boxright.Location = new System.Drawing.Point(222, 52);
             this.boxright.Name = "boxright";
             this.boxright.Size = new System.Drawing.Size(77, 21);
             this.boxright.TabIndex = 27;
@@ -248,7 +251,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxup.FormattingEnabled = true;
-            this.boxup.Location = new System.Drawing.Point(30, 58);
+            this.boxup.Location = new System.Drawing.Point(32, 36);
             this.boxup.Name = "boxup";
             this.boxup.Size = new System.Drawing.Size(77, 21);
             this.boxup.TabIndex = 28;
@@ -258,7 +261,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxleft.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxleft.FormattingEnabled = true;
-            this.boxleft.Location = new System.Drawing.Point(30, 88);
+            this.boxleft.Location = new System.Drawing.Point(32, 66);
             this.boxleft.Name = "boxleft";
             this.boxleft.Size = new System.Drawing.Size(77, 21);
             this.boxleft.TabIndex = 29;
@@ -268,7 +271,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxa.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxa.FormattingEnabled = true;
-            this.boxa.Location = new System.Drawing.Point(30, 133);
+            this.boxa.Location = new System.Drawing.Point(32, 111);
             this.boxa.Name = "boxa";
             this.boxa.Size = new System.Drawing.Size(77, 21);
             this.boxa.TabIndex = 30;
@@ -278,7 +281,7 @@ namespace WiimoteWhiteboard
             // 
             this.boxminus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.boxminus.FormattingEnabled = true;
-            this.boxminus.Location = new System.Drawing.Point(32, 189);
+            this.boxminus.Location = new System.Drawing.Point(34, 167);
             this.boxminus.Name = "boxminus";
             this.boxminus.Size = new System.Drawing.Size(77, 21);
             this.boxminus.TabIndex = 32;
@@ -288,7 +291,7 @@ namespace WiimoteWhiteboard
             // 
             this.box1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.box1.FormattingEnabled = true;
-            this.box1.Location = new System.Drawing.Point(32, 272);
+            this.box1.Location = new System.Drawing.Point(34, 250);
             this.box1.Name = "box1";
             this.box1.Size = new System.Drawing.Size(77, 21);
             this.box1.TabIndex = 33;
@@ -297,7 +300,7 @@ namespace WiimoteWhiteboard
             // okbutton
             // 
             this.okbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okbutton.Location = new System.Drawing.Point(216, 354);
+            this.okbutton.Location = new System.Drawing.Point(218, 332);
             this.okbutton.Name = "okbutton";
             this.okbutton.Size = new System.Drawing.Size(75, 23);
             this.okbutton.TabIndex = 0;
@@ -312,7 +315,7 @@ namespace WiimoteWhiteboard
             this.boxb.Items.AddRange(new object[] {
             "RightClick",
             "BtnShift"});
-            this.boxb.Location = new System.Drawing.Point(220, 135);
+            this.boxb.Location = new System.Drawing.Point(222, 113);
             this.boxb.Name = "boxb";
             this.boxb.Size = new System.Drawing.Size(77, 21);
             this.boxb.TabIndex = 45;
@@ -320,6 +323,7 @@ namespace WiimoteWhiteboard
             // 
             // fileToolStripMenuItem
             // 
+            this.fileToolStripMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.save,
             this.load});
@@ -338,7 +342,7 @@ namespace WiimoteWhiteboard
             this.save.MergeIndex = 0;
             this.save.Name = "save";
             this.save.Padding = new System.Windows.Forms.Padding(0);
-            this.save.Size = new System.Drawing.Size(98, 20);
+            this.save.Size = new System.Drawing.Size(109, 20);
             this.save.Text = "Save";
             this.save.TextAlign = System.Drawing.ContentAlignment.TopLeft;
             this.save.TextDirection = System.Windows.Forms.ToolStripTextDirection.Horizontal;
@@ -354,7 +358,7 @@ namespace WiimoteWhiteboard
             this.load.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.load.Name = "load";
             this.load.Padding = new System.Windows.Forms.Padding(0);
-            this.load.Size = new System.Drawing.Size(98, 20);
+            this.load.Size = new System.Drawing.Size(109, 20);
             this.load.Text = "Load";
             this.load.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.load.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
@@ -391,27 +395,27 @@ namespace WiimoteWhiteboard
             // defaultpreset
             // 
             this.defaultpreset.Name = "defaultpreset";
-            this.defaultpreset.Size = new System.Drawing.Size(128, 22);
+            this.defaultpreset.Size = new System.Drawing.Size(139, 22);
             this.defaultpreset.Text = "Default";
             this.defaultpreset.Click += new System.EventHandler(this.defaultpreset_Click);
             // 
             // mediapreset
             // 
             this.mediapreset.Name = "mediapreset";
-            this.mediapreset.Size = new System.Drawing.Size(128, 22);
+            this.mediapreset.Size = new System.Drawing.Size(139, 22);
             this.mediapreset.Text = "Media";
             this.mediapreset.Click += new System.EventHandler(this.mediapreset_Click);
             // 
             // gomPlayer
             // 
             this.gomPlayer.Name = "gomPlayer";
-            this.gomPlayer.Size = new System.Drawing.Size(128, 22);
+            this.gomPlayer.Size = new System.Drawing.Size(139, 22);
             this.gomPlayer.Text = "Gom Player";
             this.gomPlayer.Click += new System.EventHandler(this.gomPlayer_Click);
             // 
             // tb1
             // 
-            this.tb1.Location = new System.Drawing.Point(5, 356);
+            this.tb1.Location = new System.Drawing.Point(7, 334);
             this.tb1.Name = "tb1";
             this.tb1.Size = new System.Drawing.Size(100, 20);
             this.tb1.TabIndex = 46;
@@ -419,40 +423,69 @@ namespace WiimoteWhiteboard
             // customlbl
             // 
             this.customlbl.AutoSize = true;
-            this.customlbl.Location = new System.Drawing.Point(4, 340);
+            this.customlbl.Location = new System.Drawing.Point(6, 318);
             this.customlbl.Name = "customlbl";
             this.customlbl.Size = new System.Drawing.Size(45, 13);
             this.customlbl.TabIndex = 47;
             this.customlbl.Text = "Custom:";
             // 
-            // ypos
+            // ges1
             // 
-            this.ypos.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.ypos.FormattingEnabled = true;
-            this.ypos.Location = new System.Drawing.Point(112, 17);
-            this.ypos.Name = "ypos";
-            this.ypos.Size = new System.Drawing.Size(77, 21);
-            this.ypos.TabIndex = 48;
-            this.ypos.SelectedIndexChanged += new System.EventHandler(this.ypos_SelectedIndexChanged);
+            this.ges1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ges1.FormattingEnabled = true;
+            this.ges1.Location = new System.Drawing.Point(114, 377);
+            this.ges1.Name = "ges1";
+            this.ges1.Size = new System.Drawing.Size(77, 21);
+            this.ges1.TabIndex = 49;
+            this.ges1.SelectedIndexChanged += new System.EventHandler(this.ges1_SelectedIndexChanged);
             // 
-            // yneg
+            // gestb
             // 
-            this.yneg.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.yneg.FormattingEnabled = true;
-            this.yneg.Location = new System.Drawing.Point(112, 376);
-            this.yneg.Name = "yneg";
-            this.yneg.Size = new System.Drawing.Size(77, 21);
-            this.yneg.TabIndex = 49;
-            this.yneg.SelectedIndexChanged += new System.EventHandler(this.yneg_SelectedIndexChanged);
+            this.gestb.Location = new System.Drawing.Point(12, 419);
+            this.gestb.Name = "gestb";
+            this.gestb.Size = new System.Drawing.Size(100, 20);
+            this.gestb.TabIndex = 50;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 403);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(47, 13);
+            this.label1.TabIndex = 51;
+            this.label1.Text = "Gesture:";
+            // 
+            // recbutton
+            // 
+            this.recbutton.Location = new System.Drawing.Point(116, 419);
+            this.recbutton.Name = "recbutton";
+            this.recbutton.Size = new System.Drawing.Size(75, 23);
+            this.recbutton.TabIndex = 52;
+            this.recbutton.Text = "Record";
+            this.recbutton.UseVisualStyleBackColor = true;
+            this.recbutton.Click += new System.EventHandler(this.recbutton_Click);
+            // 
+            // ges1lbl
+            // 
+            this.ges1lbl.AutoSize = true;
+            this.ges1lbl.Location = new System.Drawing.Point(113, 361);
+            this.ges1lbl.Name = "ges1lbl";
+            this.ges1lbl.Size = new System.Drawing.Size(53, 13);
+            this.ges1lbl.TabIndex = 53;
+            this.ges1lbl.Text = "Gesture 1";
+            this.ges1lbl.Click += new System.EventHandler(this.ges1lbl_Click);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 416);
+            this.ClientSize = new System.Drawing.Size(303, 454);
             this.ControlBox = false;
-            this.Controls.Add(this.yneg);
-            this.Controls.Add(this.ypos);
+            this.Controls.Add(this.ges1lbl);
+            this.Controls.Add(this.recbutton);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.gestb);
+            this.Controls.Add(this.ges1);
             this.Controls.Add(this.customlbl);
             this.Controls.Add(this.tb1);
             this.Controls.Add(this.boxb);
@@ -487,8 +520,8 @@ namespace WiimoteWhiteboard
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Wiimote Remote";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             this.Load += new System.EventHandler(this.Form2_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.homepicture)).EndInit();
             this.menuStrip1.ResumeLayout(false);
@@ -536,8 +569,11 @@ namespace WiimoteWhiteboard
         private System.Windows.Forms.TextBox tb1;
         private System.Windows.Forms.ToolStripMenuItem gomPlayer;
         private System.Windows.Forms.Label customlbl;
-        public System.Windows.Forms.ComboBox ypos;
-        public System.Windows.Forms.ComboBox yneg;
+        public System.Windows.Forms.ComboBox ges1;
+        private System.Windows.Forms.TextBox gestb;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button recbutton;
+        private System.Windows.Forms.Label ges1lbl;
 
 
     }

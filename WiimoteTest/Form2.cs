@@ -17,10 +17,10 @@ namespace WiimoteWhiteboard
 {
     public partial class Form2 : Form
     {
-        public const int NUMBOXES = 13;
-        public object[] items = new object[] { "None", "Ctrl", "Alt", "Shift", "Tab", "Enter", "Esc", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "Home", "End", "Delete", "PgDown", "PgUp", "Insert", "PrtScrn", "Backspace", "Space", "LeftClick", "RightClick", "Copy", "Paste", "DblClick", "Hover", "Play", "Pause", "Play/Pause", "Stop", "Prev Track", "Next Track", "Vol Up", "Vol Down", "Vol Mute", "Custom"};
-        public int[] regitems = new int[] { 0, 25, 7, 8, 9, 10, 5, 22, 23, 0, 0, 0, 0};   //default indexes
-        public int[] shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        public const int NUMBOXES = 11;
+        public object[] items = new object[] { "None", "Ctrl", "Alt", "Shift", "Tab", "Enter", "Esc", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "Home", "End", "Delete", "PgDown", "PgUp", "Insert", "PrtScrn", "Backspace", "Space", "LeftClick", "RightClick", "Copy", "Paste", "DblClick", "Hover", "Play", "Pause", "Play/Pause", "Stop", "Prev Track", "Next Track", "Vol Up", "Vol Down", "Vol Mute", "Custom", "Gesture"};
+        public int[] regitems = new int[] { 0, 25, 7, 8, 9, 10, 5, 22, 23, 0, 0, 0, 0, 0};   //default indexes
+        public int[] shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         public int[] prevselindex = new int[NUMBOXES];
         public int[] regprevselindex = new int[NUMBOXES];
         public int[] shiftprevselindex = new int[NUMBOXES];
@@ -30,14 +30,27 @@ namespace WiimoteWhiteboard
         public ComboBox[] boxes;
         public bool start = true;
         public bool changeshift = false;
+        public string motions = "";
+        public bool recording = false;
+        public bool gesturing = false;
+
+        //variables for gesture boxes
+        public const int GESBOXES = 1;
+        public ComboBox[] gesboxes;
+        public int[] gesprevindex = new int[GESBOXES];
+        public int[] gescustom = new int[GESBOXES];
+        public Form3 form3;
+        public string gesture = "";
 
         public Form2()
         {
             InitializeComponent();
-            boxes = new ComboBox[] {boxb, boxa, boxup, boxdown, boxleft, boxright, boxhome, boxminus, boxplus, box1, box2, ypos, yneg };
+            boxes = new ComboBox[] {boxb, boxa, boxup, boxdown, boxleft, boxright, boxhome, boxminus, boxplus, box1, box2, ges1};
+            gesboxes = new ComboBox[] { ges1 };
 
             //creates item list for all boxes
-            for (int i = 1; i <= NUMBOXES-1; i++) boxes[i].Items.AddRange(items);
+            for (int i = 1; i <= NUMBOXES - 1; i++) boxes[i].Items.AddRange(items);
+            for (int i = 0; i <= GESBOXES - 1; i++) gesboxes[i].Items.AddRange(items);
 
             //load data from registry
             try
@@ -71,13 +84,16 @@ namespace WiimoteWhiteboard
             }
             prevselindex = regitems;
             regprevselindex = regitems;
+            form3 = new Form3();
+            form3.Show();
+            form3.Hide();
 
             start = false;
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
@@ -212,14 +228,9 @@ namespace WiimoteWhiteboard
             customize(box2, 10);
         }
 
-        private void ypos_SelectedIndexChanged(object sender, EventArgs e)
+        private void ges1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            customize(ypos, 11);
-        }
-
-        private void yneg_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            customize(yneg, 12);
+            customize(ges1, 11);
         }
         #endregion
 
@@ -267,13 +278,13 @@ namespace WiimoteWhiteboard
         {
             if (!shifted)
             {
-                for (int i = 1; i < regitems.Length; i++) regitems[i] = boxes[i].SelectedIndex;
+                for (int i = 1; i < NUMBOXES; i++) regitems[i] = boxes[i].SelectedIndex;
                 regprevselindex = prevselindex;
                 regcustom = custom;
             }
             else
             {
-                for (int i = 1; i < shiftitems.Length; i++) shiftitems[i] = boxes[i].SelectedIndex;
+                for (int i = 1; i < NUMBOXES; i++) shiftitems[i] = boxes[i].SelectedIndex;
                 shiftprevselindex = prevselindex;
                 shiftcustom = custom;
             }
@@ -323,5 +334,83 @@ namespace WiimoteWhiteboard
             shiftcustom = new string[] { "", "", "^{up}", "^{down}", "^{left}", "^{right}", "", "", "", "", "", "", "" };
             setstates(false);
         }
+
+        private void recbutton_Click(object sender, EventArgs e)
+        {
+            if (recbutton.Text != "Stop")
+            {
+                recording = true;
+                recbutton.Text = "Stop";
+                motions = "";
+            }
+            else
+            {
+                recording = false;
+                recbutton.Text = "Record";
+            }
+        }
+
+        public void checkbump(ref byte[] temp, string c)
+        {
+            int max = 0;
+            int min = 256;
+            string toadd = "";
+            if (int.Parse(temp[0].ToString()) > 150 && temp[49] > 10)
+            {
+                foreach (byte b in temp)
+                    if (int.Parse(b.ToString()) < min)
+                        min = int.Parse(b.ToString());
+                if (int.Parse(temp[0].ToString()) - min > 50)
+                {
+                    temp = new byte[50];
+                    toadd = c + "P";
+                    motions += toadd;
+                }
+            }
+            if (int.Parse(temp[0].ToString()) < 105 && temp[49] > 10)
+            {
+                foreach (byte b in temp)
+                    if (int.Parse(b.ToString()) > max)
+                        max = int.Parse(b.ToString());
+                if (max - int.Parse(temp[0].ToString()) > 50)
+                {
+                    temp = new byte[50];
+                    toadd = c + "N";
+                    motions += toadd;
+                }
+            }
+            if(recording) gestb.Text = motions;
+            if (gesturing && toadd != "")
+            {
+                if (form3.label1.Text == "")
+                    form3.label1.Text = toadd;
+                else
+                    form3.label1.Text += "-" + toadd;
+                int gesnum;
+                if ((gesnum = getgesture()) != -1)
+                    form3.label2.Text = (string)items[gesnum];
+                else
+                    form3.label2.Text = "";
+            }
+        }
+
+        private void ges1lbl_Click(object sender, EventArgs e)
+        {
+            ges1lbl.Text = gestb.Text;
+            for (int i = 2; i < ges1lbl.Text.Length; i = 3 + i)
+                ges1lbl.Text = ges1lbl.Text.Insert(i, "-");
+            if (gestb.Text == "")
+                ges1lbl.Text = "Gesture 1";
+        }
+
+        public int getgesture() //returns the index of the gesture box, or -1 if not found
+        {
+            string[] tofind = ges1lbl.Text.Split('-');
+            foreach (string s in tofind)
+                if(!form3.label1.Text.Contains(s))
+                    return -1;
+            return ges1.SelectedIndex;
+        }
+
       }
 }

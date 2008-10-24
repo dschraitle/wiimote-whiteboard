@@ -1,0 +1,17 @@
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\bin\Release\WiimoteWhiteboard.exe.config
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.exe
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.pdb
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.CalibrationForm.resources
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.Form1.resources
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.Form2.resources
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.Properties.Resources.resources
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.csproj.GenerateResource.Cache
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\bin\Release\WiimoteWhiteboard.exe.manifest
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\bin\Release\WiimoteWhiteboard.application
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\bin\Release\WiimoteWhiteboard.exe
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\bin\Release\WiimoteWhiteboard.pdb
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.TrustInfo.xml
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.exe.manifest
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.application
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.Form3.resources

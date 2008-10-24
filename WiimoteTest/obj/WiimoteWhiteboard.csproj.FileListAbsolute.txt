@@ -33,3 +33,6 @@ C:\Documents and Settings\Me\Desktop\whiteboard 1.2 with custom\WiimoteTest\bin\
 C:\Documents and Settings\Me\Desktop\whiteboard 1.2 with custom\WiimoteTest\obj\Release\WiimoteWhiteboard v0.2.TrustInfo.xml
 C:\Documents and Settings\Me\Desktop\whiteboard 1.2 with custom\WiimoteTest\obj\Release\WiimoteWhiteboard v0.2.exe.manifest
 C:\Documents and Settings\Me\Desktop\whiteboard 1.2 with custom\WiimoteTest\obj\Release\WiimoteWhiteboard v0.2.application
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\bin\Release\WiimoteWhiteboard.exe.config
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.exe
+C:\Documents and Settings\David\My Documents\Visual Studio 2005\Projects\whiteboard 1.4\WiimoteTest\obj\Release\WiimoteWhiteboard.pdb
