@@ -45,7 +45,7 @@ namespace WiimoteWhiteboard
         public Form2()
         {
             InitializeComponent();
-            boxes = new ComboBox[] {boxb, boxa, boxup, boxdown, boxleft, boxright, boxhome, boxminus, boxplus, box1, box2, ges1};
+            boxes = new ComboBox[] {boxb, boxa, boxup, boxdown, boxleft, boxright, boxhome, boxminus, boxplus, box1, box2};
             gesboxes = new ComboBox[] { ges1 };
 
             //creates item list for all boxes
@@ -145,7 +145,7 @@ namespace WiimoteWhiteboard
                     object[] load = (object[])b.Deserialize(s);
                     s.Close();
                     regitems = (int[])load[0];
-                    custom = (string[])load[1];
+                    regcustom = (string[])load[1];
                     shiftitems = (int[])load[2];
                     shiftcustom = (string[])load[3];
                 }
@@ -230,7 +230,7 @@ namespace WiimoteWhiteboard
 
         private void ges1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            customize(ges1, 11);
+           // customize(ges1, 11);
         }
         #endregion
 
@@ -247,7 +247,7 @@ namespace WiimoteWhiteboard
                 prevselindex = regprevselindex;
                 custom = regcustom;
                 start = true;
-                for (int i = 1; i < NUMBOXES-1; i++)
+                for (int i = 1; i < NUMBOXES; i++)
                 {
                     if (regitems[i] == 35)
                     {
@@ -262,7 +262,7 @@ namespace WiimoteWhiteboard
             {
                 prevselindex = shiftprevselindex;
                 custom = shiftcustom;
-                for (int i = 1; i < NUMBOXES - 1; i++)
+                for (int i = 1; i < NUMBOXES; i++)
                 {
                     if (shiftitems[i] == 35)
                     {
@@ -312,8 +312,8 @@ namespace WiimoteWhiteboard
         private void defaultpreset_Click(object sender, EventArgs e)  //resets saved arrays to default state and updates selected indexes of boxes
         {
             boxb.SelectedIndex = 0;
-            regitems = new int[] { 0, 25, 7, 8, 9, 10, 5, 22, 23, 0, 0, 0, 0 };
-            shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            regitems = new int[] { 0, 25, 7, 8, 9, 10, 5, 22, 23, 0, 0};
+            shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             setstates(false);
         }
 
@@ -328,8 +328,8 @@ namespace WiimoteWhiteboard
         private void gomPlayer_Click(object sender, EventArgs e)
         {
             boxb.SelectedIndex = 0;
-            regitems = new int[] { 0, 28, 7, 8, 9, 10, 5, 15, 14, 35, 35, 0, 0 };
-            shiftitems = new int[] { 0, 24, 35, 35, 35, 35, 0, 0, 0, 0, 0, 0, 0 };
+            regitems = new int[] { 0, 28, 7, 8, 9, 10, 5, 15, 14, 35, 35};
+            shiftitems = new int[] { 0, 24, 35, 35, 35, 35, 0, 0, 0, 0, 0};
             regcustom = custom = new string[] { "", "", "", "", "", "", "", "", "", "!>", "!<", "", "" };
             shiftcustom = new string[] { "", "", "^{up}", "^{down}", "^{left}", "^{right}", "", "", "", "", "", "", "" };
             setstates(false);
@@ -342,6 +342,7 @@ namespace WiimoteWhiteboard
                 recording = true;
                 recbutton.Text = "Stop";
                 motions = "";
+                gestb.Text = "";
             }
             else
             {
@@ -352,34 +353,59 @@ namespace WiimoteWhiteboard
 
         public void checkbump(ref byte[] temp, string c)
         {
+            /*take average of accel data
+             * +/- avg trips gesture
+             */
+
             int max = 0;
             int min = 256;
             string toadd = "";
-            if (int.Parse(temp[0].ToString()) > 150 && temp[49] > 10)
+            int avg = 0;
+            foreach (byte b in temp)
+                avg += int.Parse(b.ToString());
+            avg = avg - temp[temp.Length - 1];
+            avg = avg / temp.Length;
+            if (int.Parse(temp[0].ToString()) > avg + 30)
             {
-                foreach (byte b in temp)
-                    if (int.Parse(b.ToString()) < min)
-                        min = int.Parse(b.ToString());
-                if (int.Parse(temp[0].ToString()) - min > 50)
-                {
-                    temp = new byte[50];
-                    toadd = c + "P";
-                    motions += toadd;
-                }
+                temp = new byte[50];
+                toadd = c + "P";
+                if (motions.Length > 2)
+                    if (motions.Substring(motions.Length - 2) == toadd)
+                        toadd = "";
+                motions += toadd;
             }
-            if (int.Parse(temp[0].ToString()) < 105 && temp[49] > 10)
+            if (int.Parse(temp[0].ToString()) < avg - 30)
             {
-                foreach (byte b in temp)
-                    if (int.Parse(b.ToString()) > max)
-                        max = int.Parse(b.ToString());
-                if (max - int.Parse(temp[0].ToString()) > 50)
-                {
-                    temp = new byte[50];
-                    toadd = c + "N";
-                    motions += toadd;
-                }
+                temp = new byte[50];
+                toadd = c + "N";
+                motions += toadd;
             }
-            if(recording) gestb.Text = motions;
+
+            //if (int.Parse(temp[0].ToString()) > 150 && temp[49] > 10)
+            //{
+            //    foreach (byte b in temp)
+            //        if (int.Parse(b.ToString()) < min)
+            //            min = int.Parse(b.ToString());
+            //    if (int.Parse(temp[0].ToString()) - min > 50)
+            //    {
+            //        temp = new byte[50];
+            //        toadd = c + "P";
+            //        motions += toadd;
+            //    }
+            //}
+            //if (int.Parse(temp[0].ToString()) < 105 && temp[49] > 10)
+            //{
+            //    foreach (byte b in temp)
+            //        if (int.Parse(b.ToString()) > max)
+            //            max = int.Parse(b.ToString());
+            //    if (max - int.Parse(temp[0].ToString()) > 50)
+            //    {
+            //        temp = new byte[50];
+            //        toadd = c + "N";
+            //        motions += toadd;
+            //    }
+            //}
+            if(recording && toadd != "") gestb.Text += toadd;
             if (gesturing && toadd != "")
             {
                 if (form3.label1.Text == "")
