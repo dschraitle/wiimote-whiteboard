@@ -51,6 +51,8 @@ namespace WiimoteWhiteboard
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.lblSmoothing = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.mousebtn = new System.Windows.Forms.Button();
+            this.trackval = new System.Windows.Forms.Label();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -268,12 +270,13 @@ namespace WiimoteWhiteboard
             this.trackBar1.Size = new System.Drawing.Size(104, 45);
             this.trackBar1.TabIndex = 51;
             this.trackBar1.Value = 10;
+            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // lblSmoothing
             // 
             this.lblSmoothing.AutoSize = true;
-            this.lblSmoothing.Location = new System.Drawing.Point(23, 135);
+            this.lblSmoothing.Location = new System.Drawing.Point(18, 135);
             this.lblSmoothing.Name = "lblSmoothing";
             this.lblSmoothing.Size = new System.Drawing.Size(63, 13);
             this.lblSmoothing.TabIndex = 52;
@@ -287,11 +290,32 @@ namespace WiimoteWhiteboard
             this.label6.Size = new System.Drawing.Size(0, 13);
             this.label6.TabIndex = 53;
             // 
+            // mousebtn
+            // 
+            this.mousebtn.Location = new System.Drawing.Point(56, 219);
+            this.mousebtn.Name = "mousebtn";
+            this.mousebtn.Size = new System.Drawing.Size(75, 23);
+            this.mousebtn.TabIndex = 54;
+            this.mousebtn.Text = "WiiMouse";
+            this.mousebtn.UseVisualStyleBackColor = true;
+            this.mousebtn.Click += new System.EventHandler(this.mousebtn_Click);
+            // 
+            // trackval
+            // 
+            this.trackval.AutoSize = true;
+            this.trackval.Location = new System.Drawing.Point(81, 135);
+            this.trackval.Name = "trackval";
+            this.trackval.Size = new System.Drawing.Size(0, 13);
+            this.trackval.TabIndex = 55;
+            this.trackval.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(282, 205);
+            this.ClientSize = new System.Drawing.Size(282, 254);
+            this.Controls.Add(this.trackval);
+            this.Controls.Add(this.mousebtn);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.lblSmoothing);
             this.Controls.Add(this.trackBar1);
@@ -342,6 +366,8 @@ namespace WiimoteWhiteboard
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label lblSmoothing;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button mousebtn;
+        private System.Windows.Forms.Label trackval;
 	}
 }
 

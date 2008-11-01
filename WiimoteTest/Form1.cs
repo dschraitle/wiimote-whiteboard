@@ -213,6 +213,9 @@ namespace WiimoteWhiteboard
         byte[] yaccel = new byte[ACCELDATA];
         byte[] zaccel = new byte[ACCELDATA];
         public string motions = "";
+        public bool mouse = false;
+        int speed = 15;
+        int smoothing;
 
 		public Form1()
 		{
@@ -324,213 +327,239 @@ namespace WiimoteWhiteboard
             ledsfound = false;
             //extract the wiimote state
             WiimoteState ws = args.WiimoteState;
-            ledsfound = ws.IRState.Found1;
-            int i = 0;
-            do
+            if (mouse)
             {
-                if (ws.IRState.Found1)
+                double doublex = Math.Round(Convert.ToDouble(ws.NunchukState.X * trackBar1.Value), 0);
+                double doubley = Math.Round(Convert.ToDouble(ws.NunchukState.Y * -1 * trackBar1.Value), 0);
+                int X = int.Parse(doublex.ToString());
+                int Y = int.Parse(doubley.ToString());
+                Cursor.Position = new Point(Cursor.Position.X + X, Cursor.Position.Y + Y);
+
+                if (!lastWiiState.NunchukState.Z && ws.NunchukState.Z)
+                    mouse_event(mouseclickd, X, Y, 0, 0);
+                if (lastWiiState.NunchukState.Z && !ws.NunchukState.Z)
+                    mouse_event(mouseclicku, X, Y, 0, 0);
+                lastWiiState.NunchukState.Z = ws.NunchukState.Z;
+
+                if (!lastWiiState.NunchukState.C && ws.NunchukState.C)
                 {
-                    int x = ws.IRState.RawX1;
-                    int y = ws.IRState.RawY1;
-                    float warpedX = x;
-                    float warpedY = y;
-                    warper.warp(x, y, ref warpedX, ref warpedY);
-
-                    smoothingBuffer[smoothingBufferIndex % smoothingBufferSize].X = warpedX;
-                    smoothingBuffer[smoothingBufferIndex % smoothingBufferSize].Y = warpedY;
-                    smoothingBufferIndex++;
-
-                    if (!lastWiiState.IRState.Found1)//mouse down
+                    speed = trackBar1.Value;
+                    trackBar1.Value = 3;
+                }
+                if (lastWiiState.NunchukState.C && !ws.NunchukState.C)
+                    trackBar1.Value = speed;
+                lastWiiState.NunchukState.C = ws.NunchukState.C;
+            }
+            else
+            {
+                ledsfound = ws.IRState.Found1;
+                int i = 0;
+                do
+                {
+                    if (ws.IRState.Found1)
                     {
-                        lastWiiState.IRState.Found1 = ws.IRState.Found1;
-                        smoothingBufferIndex = 0;//resets the count
+                        int x = ws.IRState.RawX1;
+                        int y = ws.IRState.RawY1;
+                        float warpedX = x;
+                        float warpedY = y;
+                        warper.warp(x, y, ref warpedX, ref warpedY);
 
-                        if (cursorControl)
+                        smoothingBuffer[smoothingBufferIndex % smoothingBufferSize].X = warpedX;
+                        smoothingBuffer[smoothingBufferIndex % smoothingBufferSize].Y = warpedY;
+                        smoothingBufferIndex++;
+
+                        if (!lastWiiState.IRState.Found1)//mouse down
                         {
-                            INPUT[] buffer = new INPUT[2];
-                            buffer[0].type = INPUT_MOUSE;
-                            buffer[0].mi.dx = (int)(warpedX * 65535.0f / screenWidth);
-                            buffer[0].mi.dy = (int)(warpedY * 65535.0f / screenHeight);
-                            buffer[0].mi.mouseData = 0;
-                            buffer[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
-                            buffer[0].mi.time = 0;
-                            buffer[0].mi.dwExtraInfo = (IntPtr)0;
+                            lastWiiState.IRState.Found1 = ws.IRState.Found1;
+                            smoothingBufferIndex = 0;//resets the count
 
-                            buffer[1].type = INPUT_MOUSE;
-                            buffer[1].mi.dx = 0;
-                            buffer[1].mi.dy = 0;
-                            buffer[1].mi.mouseData = 0;
-                            buffer[1].mi.dwFlags = (uint)mouseclickd;
-                            buffer[1].mi.time = 1;
-                            buffer[1].mi.dwExtraInfo = (IntPtr)0;
-
-                            SendInput(2, buffer, Marshal.SizeOf(buffer[0]));
-
-                        }//cusor control
-
-                        switch (calibrationState)
-                        {
-                            case 1:
-                                srcX[calibrationState - 1] = x;
-                                srcY[calibrationState - 1] = y;
-                                calibrationState = 2;
-                                doCalibration();
-                                break;
-                            case 2:
-                                srcX[calibrationState - 1] = x;
-                                srcY[calibrationState - 1] = y;
-                                calibrationState = 3;
-                                doCalibration();
-                                break;
-                            case 3:
-                                srcX[calibrationState - 1] = x;
-                                srcY[calibrationState - 1] = y;
-                                calibrationState = 4;
-                                doCalibration();
-                                break;
-                            case 4:
-                                srcX[calibrationState - 1] = x;
-                                srcY[calibrationState - 1] = y;
-                                calibrationState = 5;
-                                doCalibration();
-                                break;
-                            default:
-                                break;
-                        }//calibtation state
-                    }//mouse down                
-                    else
-                    {
-                        if (cursorControl)//dragging
-                        {
-                            INPUT[] buffer = new INPUT[1];
-                            buffer[0].type = INPUT_MOUSE;
-                            if (enableSmoothing)
+                            if (cursorControl)
                             {
-                                PointF s = getSmoothedCursor(smoothingAmount);
-                                buffer[0].mi.dx = (int)(s.X * 65535.0f / screenWidth);
-                                buffer[0].mi.dy = (int)(s.Y * 65535.0f / screenHeight);
-                            }
-                            else
-                            {
+                                INPUT[] buffer = new INPUT[2];
+                                buffer[0].type = INPUT_MOUSE;
                                 buffer[0].mi.dx = (int)(warpedX * 65535.0f / screenWidth);
                                 buffer[0].mi.dy = (int)(warpedY * 65535.0f / screenHeight);
-                            }
-                            buffer[0].mi.mouseData = 0;
-                            buffer[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
-                            buffer[0].mi.time = 0;
-                            buffer[0].mi.dwExtraInfo = (IntPtr)0;
-                            SendInput(1, buffer, Marshal.SizeOf(buffer[0]));
-                        }
-                    }
-                }//ir visible
+                                buffer[0].mi.mouseData = 0;
+                                buffer[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
+                                buffer[0].mi.time = 0;
+                                buffer[0].mi.dwExtraInfo = (IntPtr)0;
 
-                else
-                {
-                    if (lastWiiState.IRState.Found1)//mouse up
-                    {
-                        lastWiiState.IRState.Found1 = ws.IRState.Found1;
-                        if (cursorControl)
+                                buffer[1].type = INPUT_MOUSE;
+                                buffer[1].mi.dx = 0;
+                                buffer[1].mi.dy = 0;
+                                buffer[1].mi.mouseData = 0;
+                                buffer[1].mi.dwFlags = (uint)mouseclickd;
+                                buffer[1].mi.time = 1;
+                                buffer[1].mi.dwExtraInfo = (IntPtr)0;
+
+                                SendInput(2, buffer, Marshal.SizeOf(buffer[0]));
+
+                            }//cusor control
+
+                            switch (calibrationState)
+                            {
+                                case 1:
+                                    srcX[calibrationState - 1] = x;
+                                    srcY[calibrationState - 1] = y;
+                                    calibrationState = 2;
+                                    doCalibration();
+                                    break;
+                                case 2:
+                                    srcX[calibrationState - 1] = x;
+                                    srcY[calibrationState - 1] = y;
+                                    calibrationState = 3;
+                                    doCalibration();
+                                    break;
+                                case 3:
+                                    srcX[calibrationState - 1] = x;
+                                    srcY[calibrationState - 1] = y;
+                                    calibrationState = 4;
+                                    doCalibration();
+                                    break;
+                                case 4:
+                                    srcX[calibrationState - 1] = x;
+                                    srcY[calibrationState - 1] = y;
+                                    calibrationState = 5;
+                                    doCalibration();
+                                    break;
+                                default:
+                                    break;
+                            }//calibtation state
+                        }//mouse down                
+                        else
                         {
-                            INPUT[] buffer = new INPUT[2];
-                            buffer[0].type = INPUT_MOUSE;
-                            buffer[0].mi.dx = 0;
-                            buffer[0].mi.dy = 0;
-                            buffer[0].mi.mouseData = 0;
-                            buffer[0].mi.dwFlags = (uint)mouseclicku;
-                            buffer[0].mi.time = 0;
-                            buffer[0].mi.dwExtraInfo = (IntPtr)0;
-
-                            buffer[1].type = INPUT_MOUSE;
-                            buffer[1].mi.dx = 0;
-                            buffer[1].mi.dy = 0;
-                            buffer[1].mi.mouseData = 0;
-                            buffer[1].mi.dwFlags = MOUSEEVENTF_MOVE;
-                            buffer[1].mi.time = 0;
-                            buffer[1].mi.dwExtraInfo = (IntPtr)0;
-
-                            SendInput(1, buffer, Marshal.SizeOf(buffer[0]));
-
+                            if (cursorControl)//dragging
+                            {
+                                INPUT[] buffer = new INPUT[1];
+                                buffer[0].type = INPUT_MOUSE;
+                                if (enableSmoothing)
+                                {
+                                    PointF s = getSmoothedCursor(smoothingAmount);
+                                    buffer[0].mi.dx = (int)(s.X * 65535.0f / screenWidth);
+                                    buffer[0].mi.dy = (int)(s.Y * 65535.0f / screenHeight);
+                                }
+                                else
+                                {
+                                    buffer[0].mi.dx = (int)(warpedX * 65535.0f / screenWidth);
+                                    buffer[0].mi.dy = (int)(warpedY * 65535.0f / screenHeight);
+                                }
+                                buffer[0].mi.mouseData = 0;
+                                buffer[0].mi.dwFlags = MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE;
+                                buffer[0].mi.time = 0;
+                                buffer[0].mi.dwExtraInfo = (IntPtr)0;
+                                SendInput(1, buffer, Marshal.SizeOf(buffer[0]));
+                            }
                         }
-                    }//ir lost
-                }
-                i++;
-                if (i < numclicks && ledsfound)
+                    }//ir visible
+
+                    else
+                    {
+                        if (lastWiiState.IRState.Found1)//mouse up
+                        {
+                            lastWiiState.IRState.Found1 = ws.IRState.Found1;
+                            if (cursorControl)
+                            {
+                                INPUT[] buffer = new INPUT[2];
+                                buffer[0].type = INPUT_MOUSE;
+                                buffer[0].mi.dx = 0;
+                                buffer[0].mi.dy = 0;
+                                buffer[0].mi.mouseData = 0;
+                                buffer[0].mi.dwFlags = (uint)mouseclicku;
+                                buffer[0].mi.time = 0;
+                                buffer[0].mi.dwExtraInfo = (IntPtr)0;
+
+                                buffer[1].type = INPUT_MOUSE;
+                                buffer[1].mi.dx = 0;
+                                buffer[1].mi.dy = 0;
+                                buffer[1].mi.mouseData = 0;
+                                buffer[1].mi.dwFlags = MOUSEEVENTF_MOVE;
+                                buffer[1].mi.time = 0;
+                                buffer[1].mi.dwExtraInfo = (IntPtr)0;
+
+                                SendInput(1, buffer, Marshal.SizeOf(buffer[0]));
+
+                            }
+                        }//ir lost
+                    }
+                    i++;
+                    if (i < numclicks && ledsfound)
+                    {
+                        lastWiiState.IRState.Found1 = !ws.IRState.Found1;
+                    }
+                } while (i < numclicks);//numclicks must be 4 in order for a double click (down/up/down/up)
+                if (numclicks > 1 && ledsfound)
                 {
-                    lastWiiState.IRState.Found1 = !ws.IRState.Found1;
+                    numclicks = 1;
+                    clicked = true;
                 }
-            } while (i < numclicks);//numclicks must be 4 in order for a double click (down/up/down/up)
-            if (numclicks > 1 && ledsfound)
-            {
-                numclicks = 1;
-                clicked = true;
+                if (!lastWiiState.ButtonState.A && ws.ButtonState.A)
+                {
+                    BeginInvoke((MethodInvoker)delegate() { btnCalibrate.PerformClick(); });
+                }
+                lastWiiState.ButtonState.A = ws.ButtonState.A;
+
+                if (!lastWiiState.ButtonState.B && ws.ButtonState.B)
+                    keybd_event(VK_SPACE, 0x45, 0, 0);
+                if (lastWiiState.ButtonState.B && !ws.ButtonState.B)
+                    keybd_event(VK_SPACE, 0x45, KEYEVENTF_KEYUP, 0);
+                lastWiiState.ButtonState.B = ws.ButtonState.B;
+
+                if (!lastWiiState.ButtonState.Up && ws.ButtonState.Up)
+                    keybd_event(VK_UP, 0x45, 0, 0);
+                if (lastWiiState.ButtonState.Up && !ws.ButtonState.Up)
+                    keybd_event(VK_UP, 0x45, KEYEVENTF_KEYUP, 0);
+                lastWiiState.ButtonState.Up = ws.ButtonState.Up;
+
+                if (!lastWiiState.ButtonState.Down && ws.ButtonState.Down)
+                    keybd_event(VK_DOWN, 0x45, 0, 0);
+                if (lastWiiState.ButtonState.Down && !ws.ButtonState.Down)
+                    keybd_event(VK_DOWN, 0x45, KEYEVENTF_KEYUP, 0);
+                lastWiiState.ButtonState.Down = ws.ButtonState.Down;
+
+                if (!lastWiiState.ButtonState.Left && ws.ButtonState.Left)
+                    keybd_event(VK_LEFT, 0x45, 0, 0);
+                if (lastWiiState.ButtonState.Left && !ws.ButtonState.Left)
+                    keybd_event(VK_LEFT, 0x45, KEYEVENTF_KEYUP, 0);
+                lastWiiState.ButtonState.Left = ws.ButtonState.Left;
+
+                if (!lastWiiState.ButtonState.Right && ws.ButtonState.Right)
+                    keybd_event(VK_RIGHT, 0x45, 0, 0);
+                if (lastWiiState.ButtonState.Right && !ws.ButtonState.Right)
+                    keybd_event(VK_RIGHT, 0x45, KEYEVENTF_KEYUP, 0);
+                lastWiiState.ButtonState.Right = ws.ButtonState.Right;
+
+
+                lastWiiState.IRState.Found1 = ws.IRState.Found1;
+                lastWiiState.IRState.RawX1 = ws.IRState.RawX1;
+                lastWiiState.IRState.RawY1 = ws.IRState.RawY1;
+                lastWiiState.IRState.Found2 = ws.IRState.Found2;
+                lastWiiState.IRState.RawX2 = ws.IRState.RawX2;
+                lastWiiState.IRState.RawY2 = ws.IRState.RawY2;
+                lastWiiState.IRState.Found3 = ws.IRState.Found3;
+                lastWiiState.IRState.RawX3 = ws.IRState.RawX3;
+                lastWiiState.IRState.RawY3 = ws.IRState.RawY3;
+                lastWiiState.IRState.Found4 = ws.IRState.Found4;
+                lastWiiState.IRState.RawX4 = ws.IRState.RawX4;
+                lastWiiState.IRState.RawY4 = ws.IRState.RawY4;
+
+                //draw battery value on GUI
+                BeginInvoke((MethodInvoker)delegate() { pbBattery.Value = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery); });
+                float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
+                BeginInvoke((MethodInvoker)delegate() { lblBattery.Text = f.ToString("F"); });
+
+                //check the GUI check boxes if the IR dots are visible
+                String irstatus = "Visible IR dots: ";
+                if (ws.IRState.Found1)
+                    irstatus += "1 ";
+                if (ws.IRState.Found2)
+                    irstatus += "2 ";
+                if (ws.IRState.Found3)
+                    irstatus += "3 ";
+                if (ws.IRState.Found4)
+                    irstatus += "4 ";
+
+                BeginInvoke((MethodInvoker)delegate() { lblIRvisible.Text = irstatus; });
             }
-            if (!lastWiiState.ButtonState.A && ws.ButtonState.A)
-            {
-                BeginInvoke((MethodInvoker)delegate() { btnCalibrate.PerformClick(); });
-            }
-            lastWiiState.ButtonState.A = ws.ButtonState.A;
-
-            if (!lastWiiState.ButtonState.B && ws.ButtonState.B)
-                keybd_event(VK_SPACE, 0x45, 0, 0);
-            if (lastWiiState.ButtonState.B && !ws.ButtonState.B)
-                keybd_event(VK_SPACE, 0x45, KEYEVENTF_KEYUP, 0);
-            lastWiiState.ButtonState.B = ws.ButtonState.B;
-
-            if (!lastWiiState.ButtonState.Up && ws.ButtonState.Up)
-                keybd_event(VK_UP, 0x45, 0, 0);
-            if (lastWiiState.ButtonState.Up && !ws.ButtonState.Up)
-                keybd_event(VK_UP, 0x45, KEYEVENTF_KEYUP, 0);
-            lastWiiState.ButtonState.Up = ws.ButtonState.Up;
-
-            if (!lastWiiState.ButtonState.Down && ws.ButtonState.Down)
-                keybd_event(VK_DOWN, 0x45, 0, 0);
-            if (lastWiiState.ButtonState.Down && !ws.ButtonState.Down)
-                keybd_event(VK_DOWN, 0x45, KEYEVENTF_KEYUP, 0);
-            lastWiiState.ButtonState.Down = ws.ButtonState.Down;
-
-            if (!lastWiiState.ButtonState.Left && ws.ButtonState.Left)
-                keybd_event(VK_LEFT, 0x45, 0, 0);
-            if (lastWiiState.ButtonState.Left && !ws.ButtonState.Left)
-                keybd_event(VK_LEFT, 0x45, KEYEVENTF_KEYUP, 0);
-            lastWiiState.ButtonState.Left = ws.ButtonState.Left;
-
-            if (!lastWiiState.ButtonState.Right && ws.ButtonState.Right)
-                keybd_event(VK_RIGHT, 0x45, 0, 0);
-            if (lastWiiState.ButtonState.Right && !ws.ButtonState.Right)
-                keybd_event(VK_RIGHT, 0x45, KEYEVENTF_KEYUP, 0);
-            lastWiiState.ButtonState.Right = ws.ButtonState.Right;
-
-
-            lastWiiState.IRState.Found1 = ws.IRState.Found1;
-            lastWiiState.IRState.RawX1 = ws.IRState.RawX1;
-            lastWiiState.IRState.RawY1 = ws.IRState.RawY1;
-            lastWiiState.IRState.Found2 = ws.IRState.Found2;
-            lastWiiState.IRState.RawX2 = ws.IRState.RawX2;
-            lastWiiState.IRState.RawY2 = ws.IRState.RawY2;
-            lastWiiState.IRState.Found3 = ws.IRState.Found3;
-            lastWiiState.IRState.RawX3 = ws.IRState.RawX3;
-            lastWiiState.IRState.RawY3 = ws.IRState.RawY3;
-            lastWiiState.IRState.Found4 = ws.IRState.Found4;
-            lastWiiState.IRState.RawX4 = ws.IRState.RawX4;
-            lastWiiState.IRState.RawY4 = ws.IRState.RawY4;
-
-            //draw battery value on GUI
-            BeginInvoke((MethodInvoker)delegate() { pbBattery.Value = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery); });
-            float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
-            BeginInvoke((MethodInvoker)delegate() { lblBattery.Text = f.ToString("F"); });
-
-            //check the GUI check boxes if the IR dots are visible
-            String irstatus = "Visible IR dots: ";
-            if (ws.IRState.Found1)
-                irstatus += "1 ";
-            if (ws.IRState.Found2)
-                irstatus += "2 ";
-            if (ws.IRState.Found3)
-                irstatus += "3 ";
-            if (ws.IRState.Found4)
-                irstatus += "4 ";
-
-            BeginInvoke((MethodInvoker)delegate() { lblIRvisible.Text = irstatus; });
 
             mut.ReleaseMutex();        
         }
@@ -555,21 +584,19 @@ namespace WiimoteWhiteboard
                 xaccel[0] = ws.AccelState.RawX;
                 yaccel[0] = ws.AccelState.RawY;
                 zaccel[0] = ws.AccelState.RawZ;
-                xlbl.Text = ws.AccelState.RawX.ToString();
-                ylbl.Text = ws.AccelState.RawY.ToString();
-                zlbl.Text = ws.AccelState.RawZ.ToString();
+                xlbl.Text = ws.AccelState.X.ToString();
+                ylbl.Text = ws.AccelState.Y.ToString();
+                zlbl.Text = ws.AccelState.Z.ToString();
                 if (form2.recording || form2.gesturing)
                 {
                     form2.checkbump(ref xaccel, "X");
                     form2.checkbump(ref yaccel, "Y");
                     form2.checkbump(ref zaccel, "Z");
                 }
-
                 BeginInvoke((MethodInvoker)delegate() { pbBattery2.Value = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery); });
                 float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
                 BeginInvoke((MethodInvoker)delegate() { lblBattery2.Text = f.ToString("F"); });
 
-                
                 
                 //when shift button is pressed, perform these functions
                 if (ws.ButtonState.B)
@@ -577,7 +604,7 @@ namespace WiimoteWhiteboard
                     shifting = true;
                     setclick(MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP);
                     if (ws.ButtonState.A) { if (!done[1]) translate(form2.shiftitems[1], true, 1); }
-                    else if (ws.ButtonState.Up){ if (!done[2]) translate(form2.shiftitems[2], true, 2);}
+                    else if (ws.ButtonState.Up) { if (!done[2]) translate(form2.shiftitems[2], true, 2); }
                     else if (ws.ButtonState.Down) { if (!done[3]) translate(form2.shiftitems[3], true, 3); }
                     else if (ws.ButtonState.Left) { if (!done[4]) translate(form2.shiftitems[4], true, 4); }
                     else if (ws.ButtonState.Right) { if (!done[5]) translate(form2.shiftitems[5], true, 5); }
@@ -589,97 +616,103 @@ namespace WiimoteWhiteboard
                     else setclick(MOUSEEVENTF_RIGHTDOWN, MOUSEEVENTF_RIGHTUP);
                     shifting = false;
                 }
-                else
+                else    //b button will right click when only it is held down
                 {
                     if (lastWiiState2.ButtonState.B && !ws.ButtonState.B)
                         setclick(MOUSEEVENTF_LEFTDOWN, MOUSEEVENTF_LEFTUP);
                 }
                 lastWiiState2.ButtonState.B = ws.ButtonState.B;
-                
+
                 //when the regular buttons are pressed and released, these functions will be performed
                 if (!lastWiiState2.ButtonState.A && ws.ButtonState.A && !ws.ButtonState.B)
-                    translate(form2.regitems[1], true, 1);                    
-                if (lastWiiState2.ButtonState.A && !ws.ButtonState.A){
+                    translate(form2.regitems[1], true, 1);
+                if (lastWiiState2.ButtonState.A && !ws.ButtonState.A)
+                {
                     translate(form2.regitems[1], false, 1);
-                    translate(form2.shiftitems[1], false, 1);}
+                    translate(form2.shiftitems[1], false, 1);
+                }
                 lastWiiState2.ButtonState.A = ws.ButtonState.A;
 
                 if (!lastWiiState2.ButtonState.Up && ws.ButtonState.Up && !ws.ButtonState.B)
                     translate(form2.regitems[2], true, 2);
-                if (lastWiiState2.ButtonState.Up && !ws.ButtonState.Up){
+                if (lastWiiState2.ButtonState.Up && !ws.ButtonState.Up)
+                {
                     translate(form2.regitems[2], false, 2);
-                    translate(form2.shiftitems[2], false, 2);}
+                    translate(form2.shiftitems[2], false, 2);
+                }
                 lastWiiState2.ButtonState.Up = ws.ButtonState.Up;
 
                 if (!lastWiiState2.ButtonState.Down && ws.ButtonState.Down && !ws.ButtonState.B)
                     translate(form2.regitems[3], true, 3);
-                if (lastWiiState2.ButtonState.Down && !ws.ButtonState.Down){
+                if (lastWiiState2.ButtonState.Down && !ws.ButtonState.Down)
+                {
                     translate(form2.regitems[3], false, 3);
-                    translate(form2.shiftitems[3], false, 3);}
+                    translate(form2.shiftitems[3], false, 3);
+                }
                 lastWiiState2.ButtonState.Down = ws.ButtonState.Down;
 
                 if (!lastWiiState2.ButtonState.Left && ws.ButtonState.Left && !ws.ButtonState.B)
                     translate(form2.regitems[4], true, 4);
-                if (lastWiiState2.ButtonState.Left && !ws.ButtonState.Left){
+                if (lastWiiState2.ButtonState.Left && !ws.ButtonState.Left)
+                {
                     translate(form2.regitems[4], false, 4);
-                    translate(form2.shiftitems[4], false, 4);}
+                    translate(form2.shiftitems[4], false, 4);
+                }
                 lastWiiState2.ButtonState.Left = ws.ButtonState.Left;
 
                 if (!lastWiiState2.ButtonState.Right && ws.ButtonState.Right && !ws.ButtonState.B)
                     translate(form2.regitems[5], true, 5);
-                if (lastWiiState2.ButtonState.Right && !ws.ButtonState.Right){
+                if (lastWiiState2.ButtonState.Right && !ws.ButtonState.Right)
+                {
                     translate(form2.regitems[5], false, 5);
-                    translate(form2.shiftitems[5], false, 5);}
+                    translate(form2.shiftitems[5], false, 5);
+                }
                 lastWiiState2.ButtonState.Right = ws.ButtonState.Right;
 
                 if (!lastWiiState2.ButtonState.Home && ws.ButtonState.Home && !ws.ButtonState.B)
                     translate(form2.regitems[6], true, 6);
-                if (lastWiiState2.ButtonState.Home && !ws.ButtonState.Home){
+                if (lastWiiState2.ButtonState.Home && !ws.ButtonState.Home)
+                {
                     translate(form2.regitems[6], false, 6);
-                    translate(form2.shiftitems[6], false, 6);}
+                    translate(form2.shiftitems[6], false, 6);
+                }
                 lastWiiState2.ButtonState.Home = ws.ButtonState.Home;
 
                 if (!lastWiiState2.ButtonState.Minus && ws.ButtonState.Minus && !ws.ButtonState.B)
                     translate(form2.regitems[7], true, 7);
-                if (lastWiiState2.ButtonState.Minus && !ws.ButtonState.Minus){
+                if (lastWiiState2.ButtonState.Minus && !ws.ButtonState.Minus)
+                {
                     translate(form2.regitems[7], false, 7);
-                    translate(form2.shiftitems[7], false, 7);}
+                    translate(form2.shiftitems[7], false, 7);
+                }
                 lastWiiState2.ButtonState.Minus = ws.ButtonState.Minus;
 
                 if (!lastWiiState2.ButtonState.Plus && ws.ButtonState.Plus && !ws.ButtonState.B)
                     translate(form2.regitems[8], true, 8);
-                if (lastWiiState2.ButtonState.Plus && !ws.ButtonState.Plus){
+                if (lastWiiState2.ButtonState.Plus && !ws.ButtonState.Plus)
+                {
                     translate(form2.regitems[8], false, 8);
-                    translate(form2.shiftitems[8], false, 8);}
+                    translate(form2.shiftitems[8], false, 8);
+                }
                 lastWiiState2.ButtonState.Plus = ws.ButtonState.Plus;
 
                 if (!lastWiiState2.ButtonState.One && ws.ButtonState.One && !ws.ButtonState.B)
                     translate(form2.regitems[9], true, 9);
-                if (lastWiiState2.ButtonState.One && !ws.ButtonState.One){
+                if (lastWiiState2.ButtonState.One && !ws.ButtonState.One)
+                {
                     translate(form2.regitems[9], false, 9);
-                    translate(form2.shiftitems[9], false, 9);}
+                    translate(form2.shiftitems[9], false, 9);
+                }
                 lastWiiState2.ButtonState.One = ws.ButtonState.One;
 
                 if (!lastWiiState2.ButtonState.Two && ws.ButtonState.Two && !ws.ButtonState.B)
                     translate(form2.regitems[10], true, 10);
-                if (lastWiiState2.ButtonState.Two && !ws.ButtonState.Two){
+                if (lastWiiState2.ButtonState.Two && !ws.ButtonState.Two)
+                {
                     translate(form2.regitems[10], false, 10);
-                    translate(form2.shiftitems[10], false, 10);}
+                    translate(form2.shiftitems[10], false, 10);
+                }
                 lastWiiState2.ButtonState.Two = ws.ButtonState.Two;
-
-                //if (!lastypos && ypos && !ws.ButtonState.B)
-                //    translate(form2.regitems[11], true, 11);
-                //if (lastypos && !ypos){
-                //    translate(form2.regitems[11], false, 11);
-                //    translate(form2.shiftitems[11], false, 11);}
-                //lastypos = ypos;
-
-                //if (!lastyneg && yneg && !ws.ButtonState.B)
-                //    translate(form2.regitems[12], true, 12);
-                //if (lastyneg && !yneg){
-                //    translate(form2.regitems[12], false, 12);
-                //    translate(form2.shiftitems[12], false, 12);}
-                //lastyneg = yneg;
                 mut.ReleaseMutex();
             }
         }
@@ -1083,14 +1116,42 @@ namespace WiimoteWhiteboard
             smoothingAmount = smoothing;
             trackBar1.Value = smoothing;
             enableSmoothing = (smoothingAmount != 0);
-            lblSmoothing.Text = "Smoothing: " + smoothingAmount;
+            lblSmoothing.Text = "Smoothing: ";
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            smoothingAmount = trackBar1.Value;
-            enableSmoothing = (smoothingAmount != 0);
-            lblSmoothing.Text = "Smoothing: " + smoothingAmount;
+            if (!mouse)
+            {
+                smoothingAmount = trackBar1.Value;
+                enableSmoothing = (smoothingAmount != 0);
+            }
+        }
+
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            trackval.Text = trackBar1.Value.ToString();
+        }
+
+        private void mousebtn_Click(object sender, EventArgs e)
+        {
+            mouse = !mouse;
+            if (mouse)
+            {
+                mousebtn.Text = "Whiteboard";
+                btnCalibrate.Enabled = false;
+                lblSmoothing.Text = "Speed:";
+                smoothing = trackBar1.Value;
+                trackBar1.Value = speed;
+            }
+            else
+            {
+                mousebtn.Text = "WiiMouse";
+                btnCalibrate.Enabled = true;
+                lblSmoothing.Text = "Smoothing:";
+                speed = trackBar1.Value;
+                trackBar1.Value = smoothing;
+            }
         }
 	}
 }

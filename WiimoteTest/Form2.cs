@@ -356,9 +356,6 @@ namespace WiimoteWhiteboard
             /*take average of accel data
              * +/- avg trips gesture
              */
-
-            int max = 0;
-            int min = 256;
             string toadd = "";
             int avg = 0;
             foreach (byte b in temp)
