@@ -329,8 +329,8 @@ namespace WiimoteWhiteboard
             WiimoteState ws = args.WiimoteState;
             if (mouse)
             {
-                double doublex = Math.Round(Convert.ToDouble(ws.NunchukState.X * trackBar1.Value), 0);
-                double doubley = Math.Round(Convert.ToDouble(ws.NunchukState.Y * -1 * trackBar1.Value), 0);
+                double doublex = Math.Round(Convert.ToDouble(ws.NunchukState.X * (int)speedbox.Value), 0);
+                double doubley = Math.Round(Convert.ToDouble(ws.NunchukState.Y * -1 * (int)speedbox.Value), 0);
                 int X = int.Parse(doublex.ToString());
                 int Y = int.Parse(doubley.ToString());
                 Cursor.Position = new Point(Cursor.Position.X + X, Cursor.Position.Y + Y);
@@ -343,12 +343,21 @@ namespace WiimoteWhiteboard
 
                 if (!lastWiiState.NunchukState.C && ws.NunchukState.C)
                 {
-                    speed = trackBar1.Value;
-                    trackBar1.Value = 3;
+                    speed = (int)speedbox.Value;
+                    speedbox.Value = speedbox.Value / 3;
                 }
                 if (lastWiiState.NunchukState.C && !ws.NunchukState.C)
-                    trackBar1.Value = speed;
+                    speedbox.Value = speed;
                 lastWiiState.NunchukState.C = ws.NunchukState.C;
+
+                if (!lastWiiState2.ButtonState.A && ws.ButtonState.A)
+                    translate(form2.regitems[1], true, 1);
+                if (lastWiiState2.ButtonState.A && !ws.ButtonState.A)
+                {
+                    translate(form2.regitems[1], false, 1);
+                    translate(form2.shiftitems[1], false, 1);
+                }
+                lastWiiState2.ButtonState.A = ws.ButtonState.A;
             }
             else
             {
@@ -1121,11 +1130,8 @@ namespace WiimoteWhiteboard
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-            if (!mouse)
-            {
                 smoothingAmount = trackBar1.Value;
                 enableSmoothing = (smoothingAmount != 0);
-            }
         }
 
         private void trackBar1_ValueChanged(object sender, EventArgs e)
@@ -1140,17 +1146,11 @@ namespace WiimoteWhiteboard
             {
                 mousebtn.Text = "Whiteboard";
                 btnCalibrate.Enabled = false;
-                lblSmoothing.Text = "Speed:";
-                smoothing = trackBar1.Value;
-                trackBar1.Value = speed;
             }
             else
             {
                 mousebtn.Text = "WiiMouse";
                 btnCalibrate.Enabled = true;
-                lblSmoothing.Text = "Smoothing:";
-                speed = trackBar1.Value;
-                trackBar1.Value = smoothing;
             }
         }
 	}

@@ -53,9 +53,12 @@ namespace WiimoteWhiteboard
             this.label6 = new System.Windows.Forms.Label();
             this.mousebtn = new System.Windows.Forms.Button();
             this.trackval = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.speedbox = new System.Windows.Forms.NumericUpDown();
             this.groupBox4.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.speedbox)).BeginInit();
             this.SuspendLayout();
             // 
             // pbBattery
@@ -309,11 +312,39 @@ namespace WiimoteWhiteboard
             this.trackval.TabIndex = 55;
             this.trackval.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(156, 219);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(41, 13);
+            this.label7.TabIndex = 56;
+            this.label7.Text = "Speed:";
+            // 
+            // speedbox
+            // 
+            this.speedbox.Location = new System.Drawing.Point(199, 217);
+            this.speedbox.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            this.speedbox.Name = "speedbox";
+            this.speedbox.Size = new System.Drawing.Size(48, 20);
+            this.speedbox.TabIndex = 57;
+            this.speedbox.Value = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(282, 254);
+            this.Controls.Add(this.speedbox);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.trackval);
             this.Controls.Add(this.mousebtn);
             this.Controls.Add(this.label6);
@@ -336,6 +367,7 @@ namespace WiimoteWhiteboard
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.speedbox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -368,6 +400,8 @@ namespace WiimoteWhiteboard
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button mousebtn;
         private System.Windows.Forms.Label trackval;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown speedbox;
 	}
 }
 
