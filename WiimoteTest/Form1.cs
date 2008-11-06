@@ -208,14 +208,8 @@ namespace WiimoteWhiteboard
 
         public Form2 form2;
         Mutex mut = new Mutex();
-        const int ACCELDATA = 50;
-        byte[] xaccel = new byte[ACCELDATA];
-        byte[] yaccel = new byte[ACCELDATA];
-        byte[] zaccel = new byte[ACCELDATA];
-        public string motions = "";
         public bool mouse = false;
         int speed = 15;
-        int smoothing;
 
 		public Form1()
 		{
@@ -244,8 +238,6 @@ namespace WiimoteWhiteboard
             //add event listeners to changes in the wiiremote
             //fired for every input report - usually 100 times per second if acclerometer is enabled
 			wm.WiimoteChanged += new WiimoteChangedEventHandler(wm_OnWiimoteChanged); 
-            //fired when the extension is attached on unplugged
-			wm.WiimoteExtensionChanged += new WiimoteExtensionChangedEventHandler(wm_OnWiimoteExtensionChanged);
              
          
             try
@@ -265,6 +257,8 @@ namespace WiimoteWhiteboard
                     remote2.SetReportType(Wiimote.InputReport.IRAccel, true);
                     //set wiiremote LEDs with this enumerated ID
                     remote2.SetLEDs(false, true, false, false);
+                    //fired when the extension is attached on unplugged
+                    remote2.WiimoteExtensionChanged += new WiimoteExtensionChangedEventHandler(wm_OnWiimoteExtensionChanged);
                 }
 
                 
@@ -301,9 +295,9 @@ namespace WiimoteWhiteboard
 
             //if extension attached, enable it
 			if(args.Inserted)
-				wm.SetReportType(Wiimote.InputReport.IRExtensionAccel, true);
+				remote2.SetReportType(Wiimote.InputReport.IRExtensionAccel, true);
 			else
-				wm.SetReportType(Wiimote.InputReport.IRAccel, true);
+				remote2.SetReportType(Wiimote.InputReport.IRAccel, true);
 		}
 
         float UpdateTrackingUtilization()
@@ -327,39 +321,8 @@ namespace WiimoteWhiteboard
             ledsfound = false;
             //extract the wiimote state
             WiimoteState ws = args.WiimoteState;
-            if (mouse)
-            {
-                double doublex = Math.Round(Convert.ToDouble(ws.NunchukState.X * (int)speedbox.Value), 0);
-                double doubley = Math.Round(Convert.ToDouble(ws.NunchukState.Y * -1 * (int)speedbox.Value), 0);
-                int X = int.Parse(doublex.ToString());
-                int Y = int.Parse(doubley.ToString());
-                Cursor.Position = new Point(Cursor.Position.X + X, Cursor.Position.Y + Y);
 
-                if (!lastWiiState.NunchukState.Z && ws.NunchukState.Z)
-                    mouse_event(mouseclickd, X, Y, 0, 0);
-                if (lastWiiState.NunchukState.Z && !ws.NunchukState.Z)
-                    mouse_event(mouseclicku, X, Y, 0, 0);
-                lastWiiState.NunchukState.Z = ws.NunchukState.Z;
-
-                if (!lastWiiState.NunchukState.C && ws.NunchukState.C)
-                {
-                    speed = (int)speedbox.Value;
-                    speedbox.Value = speedbox.Value / 3;
-                }
-                if (lastWiiState.NunchukState.C && !ws.NunchukState.C)
-                    speedbox.Value = speed;
-                lastWiiState.NunchukState.C = ws.NunchukState.C;
-
-                if (!lastWiiState2.ButtonState.A && ws.ButtonState.A)
-                    translate(form2.regitems[1], true, 1);
-                if (lastWiiState2.ButtonState.A && !ws.ButtonState.A)
-                {
-                    translate(form2.regitems[1], false, 1);
-                    translate(form2.shiftitems[1], false, 1);
-                }
-                lastWiiState2.ButtonState.A = ws.ButtonState.A;
-            }
-            else
+            if (!mouse)
             {
                 ledsfound = ws.IRState.Found1;
                 int i = 0;
@@ -583,25 +546,32 @@ namespace WiimoteWhiteboard
                 //extract the wiimote state
                 WiimoteState ws = args.WiimoteState;
 
+                if (mouse)
+                {
+                    double doublex = Math.Round(Convert.ToDouble(ws.NunchukState.X * (int)speedbox.Value), 0);
+                    double doubley = Math.Round(Convert.ToDouble(ws.NunchukState.Y * -1 * (int)speedbox.Value), 0);
+                    int X = int.Parse(doublex.ToString());
+                    int Y = int.Parse(doubley.ToString());
+                    Cursor.Position = new Point(Cursor.Position.X + X, Cursor.Position.Y + Y);
+
+                    if (!lastWiiState.NunchukState.Z && ws.NunchukState.Z)
+                        mouse_event(mouseclickd, X, Y, 0, 0);
+                    if (lastWiiState.NunchukState.Z && !ws.NunchukState.Z)
+                        mouse_event(mouseclicku, X, Y, 0, 0);
+                    lastWiiState.NunchukState.Z = ws.NunchukState.Z;
+
+                    if (!lastWiiState.NunchukState.C && ws.NunchukState.C)
+                    {
+                        speed = (int)speedbox.Value;
+                        speedbox.Value = speedbox.Value / 3;
+                    }
+                    if (lastWiiState.NunchukState.C && !ws.NunchukState.C)
+                        speedbox.Value = speed;
+                    lastWiiState.NunchukState.C = ws.NunchukState.C;
+                }
+
+                //bump stuff goes here
                 //draw battery value on GUI
-                for (int i = ACCELDATA - 2; i >= 0; i--)
-                {
-                    xaccel[i + 1] = xaccel[i];
-                    yaccel[i + 1] = yaccel[i];
-                    zaccel[i + 1] = zaccel[i];
-                }
-                xaccel[0] = ws.AccelState.RawX;
-                yaccel[0] = ws.AccelState.RawY;
-                zaccel[0] = ws.AccelState.RawZ;
-                xlbl.Text = ws.AccelState.X.ToString();
-                ylbl.Text = ws.AccelState.Y.ToString();
-                zlbl.Text = ws.AccelState.Z.ToString();
-                if (form2.recording || form2.gesturing)
-                {
-                    form2.checkbump(ref xaccel, "X");
-                    form2.checkbump(ref yaccel, "Y");
-                    form2.checkbump(ref zaccel, "Z");
-                }
                 BeginInvoke((MethodInvoker)delegate() { pbBattery2.Value = (ws.Battery > 0xc8 ? 0xc8 : (int)ws.Battery); });
                 float f = (((100.0f * 48.0f * (float)(ws.Battery / 48.0f))) / 192.0f);
                 BeginInvoke((MethodInvoker)delegate() { lblBattery2.Text = f.ToString("F"); });
@@ -870,8 +840,6 @@ namespace WiimoteWhiteboard
                     keybd_event(VK_CONTROL, 0x45, KEYEVENTF_KEYUP, 0);
                     keybd_event(0x56, 0x45, KEYEVENTF_KEYUP, 0);
                     done[button] = false;
-                    
-                   
                 }
             }
             if (i == 24)//Double click
@@ -903,29 +871,6 @@ namespace WiimoteWhiteboard
                     done[button] = true;
                 }
                 else { done[button] = false; }
-            if(i == 36)
-                if (down)
-                {
-                    form2.gesturing = true;
-                    form2.motions = "";
-                    form2.form3.label1.Text = "";
-                    form2.form3.label2.Text = "";
-                    form2.form3.Show();
-                    done[button] = true;
-                }
-                else
-                {
-                    form2.gesturing = false;
-                    form2.form3.Hide();
-                    form2.gesture = form2.form3.label1.Text;
-                    int ges = form2.getgesture();
-                    if (ges != -1)
-                    {
-                        translate(ges, true, 0);
-                        translate(ges, false, 0);
-                    }
-                    done[button] = false;
-                }
                     
         }
 
@@ -1043,9 +988,6 @@ namespace WiimoteWhiteboard
 
 		private void Form1_FormClosed(object sender, FormClosedEventArgs e)
 		{
-            TextWriter t = new StreamWriter("dump.txt");
-            t.WriteLine(motions);
-            t.Close();
             //disconnect the wiimote
             wm.Disconnect();
             if (wms.Count > 1)
@@ -1125,18 +1067,15 @@ namespace WiimoteWhiteboard
             smoothingAmount = smoothing;
             trackBar1.Value = smoothing;
             enableSmoothing = (smoothingAmount != 0);
-            lblSmoothing.Text = "Smoothing: ";
+            lblSmoothing.Text = "Smoothing: " + smoothingAmount;
         }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
-                smoothingAmount = trackBar1.Value;
-                enableSmoothing = (smoothingAmount != 0);
-        }
 
-        private void trackBar1_ValueChanged(object sender, EventArgs e)
-        {
-            trackval.Text = trackBar1.Value.ToString();
+            smoothingAmount = trackBar1.Value;
+            enableSmoothing = (smoothingAmount != 0);
+            lblSmoothing.Text = "Smoothing: " + smoothingAmount;
         }
 
         private void mousebtn_Click(object sender, EventArgs e)

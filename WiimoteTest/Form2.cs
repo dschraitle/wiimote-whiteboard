@@ -18,7 +18,7 @@ namespace WiimoteWhiteboard
     public partial class Form2 : Form
     {
         public const int NUMBOXES = 11;
-        public object[] items = new object[] { "None", "Ctrl", "Alt", "Shift", "Tab", "Enter", "Esc", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "Home", "End", "Delete", "PgDown", "PgUp", "Insert", "PrtScrn", "Backspace", "Space", "LeftClick", "RightClick", "Copy", "Paste", "DblClick", "Hover", "Play", "Pause", "Play/Pause", "Stop", "Prev Track", "Next Track", "Vol Up", "Vol Down", "Vol Mute", "Custom", "Gesture"};
+        public object[] items = new object[] { "None", "Ctrl", "Alt", "Shift", "Tab", "Enter", "Esc", "UpArrow", "DownArrow", "LeftArrow", "RightArrow", "Home", "End", "Delete", "PgDown", "PgUp", "Insert", "PrtScrn", "Backspace", "Space", "LeftClick", "RightClick", "Copy", "Paste", "DblClick", "Hover", "Play", "Pause", "Play/Pause", "Stop", "Prev Track", "Next Track", "Vol Up", "Vol Down", "Vol Mute", "Custom"};
         public int[] regitems = new int[] { 0, 25, 7, 8, 9, 10, 5, 22, 23, 0, 0, 0, 0, 0};   //default indexes
         public int[] shiftitems = new int[] { 0, 24, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         public int[] prevselindex = new int[NUMBOXES];
@@ -33,24 +33,15 @@ namespace WiimoteWhiteboard
         public string motions = "";
         public bool recording = false;
         public bool gesturing = false;
-
-        //variables for gesture boxes
-        public const int GESBOXES = 1;
-        public ComboBox[] gesboxes;
-        public int[] gesprevindex = new int[GESBOXES];
-        public int[] gescustom = new int[GESBOXES];
-        public Form3 form3;
-        public string gesture = "";
+        
 
         public Form2()
         {
             InitializeComponent();
             boxes = new ComboBox[] {boxb, boxa, boxup, boxdown, boxleft, boxright, boxhome, boxminus, boxplus, box1, box2};
-            gesboxes = new ComboBox[] { ges1 };
 
             //creates item list for all boxes
             for (int i = 1; i <= NUMBOXES - 1; i++) boxes[i].Items.AddRange(items);
-            for (int i = 0; i <= GESBOXES - 1; i++) gesboxes[i].Items.AddRange(items);
 
             //load data from registry
             try
@@ -84,9 +75,6 @@ namespace WiimoteWhiteboard
             }
             prevselindex = regitems;
             regprevselindex = regitems;
-            form3 = new Form3();
-            form3.Show();
-            form3.Hide();
 
             start = false;
         }
@@ -100,8 +88,8 @@ namespace WiimoteWhiteboard
         {
             regsave();
         }
-        //saves data to the registry
-        private void regsave()
+        
+        private void regsave()  //saves data to the registry
         {
             getstates(boxb.SelectedIndex == 1);
             RegistryKey ourkey = Registry.Users;
@@ -334,7 +322,8 @@ namespace WiimoteWhiteboard
             shiftcustom = new string[] { "", "", "^{up}", "^{down}", "^{left}", "^{right}", "", "", "", "", "", "", "" };
             setstates(false);
         }
-
+        #region bumping
+        /*
         private void recbutton_Click(object sender, EventArgs e)
         {
             if (recbutton.Text != "Stop")
@@ -353,9 +342,6 @@ namespace WiimoteWhiteboard
 
         public void checkbump(ref byte[] temp, string c)
         {
-            /*take average of accel data
-             * +/- avg trips gesture
-             */
             string toadd = "";
             int avg = 0;
             foreach (byte b in temp)
@@ -402,7 +388,7 @@ namespace WiimoteWhiteboard
             //        motions += toadd;
             //    }
             //}
-            if(recording && toadd != "") gestb.Text += toadd;
+            if (recording && toadd != "") gestb.Text += toadd;
             if (gesturing && toadd != "")
             {
                 if (form3.label1.Text == "")
@@ -430,10 +416,73 @@ namespace WiimoteWhiteboard
         {
             string[] tofind = ges1lbl.Text.Split('-');
             foreach (string s in tofind)
-                if(!form3.label1.Text.Contains(s))
+                if (!form3.label1.Text.Contains(s))
                     return -1;
             return ges1.SelectedIndex;
         }
-
-      }
+         * 
+         * this goes in form1 in the remote2changed function
+         * objects used need to be declared, ACCELDATA = 50
+                for (int i = ACCELDATA - 2; i >= 0; i--)
+                {
+                    xaccel[i + 1] = xaccel[i];
+                    yaccel[i + 1] = yaccel[i];
+                    zaccel[i + 1] = zaccel[i];
+                }
+                xaccel[0] = ws.AccelState.RawX;
+                yaccel[0] = ws.AccelState.RawY;
+                zaccel[0] = ws.AccelState.RawZ;
+                xlbl.Text = ws.AccelState.X.ToString();
+                ylbl.Text = ws.AccelState.Y.ToString();
+                zlbl.Text = ws.AccelState.Z.ToString();
+                if (form2.recording || form2.gesturing)
+                {
+                    form2.checkbump(ref xaccel, "X");
+                    form2.checkbump(ref yaccel, "Y");
+                    form2.checkbump(ref zaccel, "Z");
+                }
+         * 
+         * this goes in the translate function, must make a form3 and have it load and immediately
+         * hide when the program starts, otherwise it will crash
+         * form3.label1 is the string of gestures
+         * form3.label2 is the text of the gesture that would happen
+            if(i == 36)
+                if (down)
+                {
+                    form2.gesturing = true;
+                    form2.motions = "";
+                    form2.form3.label1.Text = "";
+                    form2.form3.label2.Text = "";
+                    form2.form3.Show();
+                    done[button] = true;
+                }
+                else
+                {
+                    form2.gesturing = false;
+                    form2.form3.Hide();
+                    form2.gesture = form2.form3.label1.Text;
+                    int ges = form2.getgesture();
+                    if (ges != -1)
+                    {
+                        translate(ges, true, 0);
+                        translate(ges, false, 0);
+                    }
+                    done[button] = false;
+                }
+         * 
+         * this is in the variable declaration section of form2
+         * //variables for gesture boxes
+        public const int GESBOXES = 1;
+        public ComboBox[] gesboxes;
+        public int[] gesprevindex = new int[GESBOXES];
+        public int[] gescustom = new int[GESBOXES];
+        public Form3 form3;
+        public string gesture = "";
+         * 
+         * in form2 constructor
+         * gesboxes = new ComboBox[] { ges1 };
+         * for (int i = 0; i <= GESBOXES - 1; i++) gesboxes[i].Items.AddRange(items);
+        */
+        #endregion
+    }
 }

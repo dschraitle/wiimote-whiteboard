@@ -433,53 +433,56 @@ namespace WiimoteWhiteboard
             // 
             this.ges1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.ges1.FormattingEnabled = true;
-            this.ges1.Location = new System.Drawing.Point(114, 377);
+            this.ges1.Location = new System.Drawing.Point(127, 403);
             this.ges1.Name = "ges1";
             this.ges1.Size = new System.Drawing.Size(77, 21);
             this.ges1.TabIndex = 49;
+            this.ges1.Visible = false;
             this.ges1.SelectedIndexChanged += new System.EventHandler(this.ges1_SelectedIndexChanged);
             // 
             // gestb
             // 
-            this.gestb.Location = new System.Drawing.Point(12, 419);
+            this.gestb.Location = new System.Drawing.Point(25, 445);
             this.gestb.Name = "gestb";
             this.gestb.Size = new System.Drawing.Size(100, 20);
             this.gestb.TabIndex = 50;
+            this.gestb.Visible = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 403);
+            this.label1.Location = new System.Drawing.Point(25, 429);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(47, 13);
             this.label1.TabIndex = 51;
             this.label1.Text = "Gesture:";
+            this.label1.Visible = false;
             // 
             // recbutton
             // 
-            this.recbutton.Location = new System.Drawing.Point(116, 419);
+            this.recbutton.Location = new System.Drawing.Point(129, 445);
             this.recbutton.Name = "recbutton";
             this.recbutton.Size = new System.Drawing.Size(75, 23);
             this.recbutton.TabIndex = 52;
             this.recbutton.Text = "Record";
             this.recbutton.UseVisualStyleBackColor = true;
-            this.recbutton.Click += new System.EventHandler(this.recbutton_Click);
+            this.recbutton.Visible = false;
             // 
             // ges1lbl
             // 
             this.ges1lbl.AutoSize = true;
-            this.ges1lbl.Location = new System.Drawing.Point(113, 361);
+            this.ges1lbl.Location = new System.Drawing.Point(126, 387);
             this.ges1lbl.Name = "ges1lbl";
             this.ges1lbl.Size = new System.Drawing.Size(53, 13);
             this.ges1lbl.TabIndex = 53;
             this.ges1lbl.Text = "Gesture 1";
-            this.ges1lbl.Click += new System.EventHandler(this.ges1lbl_Click);
+            this.ges1lbl.Visible = false;
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(303, 454);
+            this.ClientSize = new System.Drawing.Size(303, 366);
             this.ControlBox = false;
             this.Controls.Add(this.ges1lbl);
             this.Controls.Add(this.recbutton);
@@ -513,6 +516,7 @@ namespace WiimoteWhiteboard
             this.Controls.Add(this.box2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

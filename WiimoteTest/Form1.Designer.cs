@@ -42,17 +42,10 @@ namespace WiimoteWhiteboard
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.custombutton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.zlbl = new System.Windows.Forms.Label();
-            this.ylbl = new System.Windows.Forms.Label();
-            this.xlbl = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.lblSmoothing = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.mousebtn = new System.Windows.Forms.Button();
-            this.trackval = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.speedbox = new System.Windows.Forms.NumericUpDown();
             this.groupBox4.SuspendLayout();
@@ -144,7 +137,7 @@ namespace WiimoteWhiteboard
             // 
             // btnCalibrate
             // 
-            this.btnCalibrate.Location = new System.Drawing.Point(150, 144);
+            this.btnCalibrate.Location = new System.Drawing.Point(150, 102);
             this.btnCalibrate.Margin = new System.Windows.Forms.Padding(2);
             this.btnCalibrate.Name = "btnCalibrate";
             this.btnCalibrate.Size = new System.Drawing.Size(121, 52);
@@ -196,74 +189,14 @@ namespace WiimoteWhiteboard
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.zlbl);
-            this.groupBox1.Controls.Add(this.ylbl);
-            this.groupBox1.Controls.Add(this.xlbl);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.custombutton);
             this.groupBox1.Controls.Add(this.checkBox3);
             this.groupBox1.Location = new System.Drawing.Point(150, 31);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(122, 107);
+            this.groupBox1.Size = new System.Drawing.Size(122, 66);
             this.groupBox1.TabIndex = 31;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "2nd Wiimote";
-            // 
-            // zlbl
-            // 
-            this.zlbl.AutoSize = true;
-            this.zlbl.Location = new System.Drawing.Point(47, 88);
-            this.zlbl.Name = "zlbl";
-            this.zlbl.Size = new System.Drawing.Size(35, 13);
-            this.zlbl.TabIndex = 50;
-            this.zlbl.Text = "label8";
-            // 
-            // ylbl
-            // 
-            this.ylbl.AutoSize = true;
-            this.ylbl.Location = new System.Drawing.Point(47, 75);
-            this.ylbl.Name = "ylbl";
-            this.ylbl.Size = new System.Drawing.Size(35, 13);
-            this.ylbl.TabIndex = 49;
-            this.ylbl.Text = "label7";
-            // 
-            // xlbl
-            // 
-            this.xlbl.AutoSize = true;
-            this.xlbl.Location = new System.Drawing.Point(47, 62);
-            this.xlbl.Name = "xlbl";
-            this.xlbl.Size = new System.Drawing.Size(35, 13);
-            this.xlbl.TabIndex = 48;
-            this.xlbl.Text = "label6";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 87);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(17, 13);
-            this.label5.TabIndex = 47;
-            this.label5.Text = "Z:";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 74);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(17, 13);
-            this.label4.TabIndex = 46;
-            this.label4.Text = "Y:";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 61);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(17, 13);
-            this.label1.TabIndex = 45;
-            this.label1.Text = "X:";
             // 
             // trackBar1
             // 
@@ -273,7 +206,6 @@ namespace WiimoteWhiteboard
             this.trackBar1.Size = new System.Drawing.Size(104, 45);
             this.trackBar1.TabIndex = 51;
             this.trackBar1.Value = 10;
-            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // lblSmoothing
@@ -295,7 +227,7 @@ namespace WiimoteWhiteboard
             // 
             // mousebtn
             // 
-            this.mousebtn.Location = new System.Drawing.Point(56, 219);
+            this.mousebtn.Location = new System.Drawing.Point(116, 159);
             this.mousebtn.Name = "mousebtn";
             this.mousebtn.Size = new System.Drawing.Size(75, 23);
             this.mousebtn.TabIndex = 54;
@@ -303,19 +235,10 @@ namespace WiimoteWhiteboard
             this.mousebtn.UseVisualStyleBackColor = true;
             this.mousebtn.Click += new System.EventHandler(this.mousebtn_Click);
             // 
-            // trackval
-            // 
-            this.trackval.AutoSize = true;
-            this.trackval.Location = new System.Drawing.Point(81, 135);
-            this.trackval.Name = "trackval";
-            this.trackval.Size = new System.Drawing.Size(0, 13);
-            this.trackval.TabIndex = 55;
-            this.trackval.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(156, 219);
+            this.label7.Location = new System.Drawing.Point(197, 159);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(41, 13);
             this.label7.TabIndex = 56;
@@ -323,17 +246,17 @@ namespace WiimoteWhiteboard
             // 
             // speedbox
             // 
-            this.speedbox.Location = new System.Drawing.Point(199, 217);
+            this.speedbox.Location = new System.Drawing.Point(240, 157);
             this.speedbox.Maximum = new decimal(new int[] {
             500,
             0,
             0,
             0});
             this.speedbox.Name = "speedbox";
-            this.speedbox.Size = new System.Drawing.Size(48, 20);
+            this.speedbox.Size = new System.Drawing.Size(35, 20);
             this.speedbox.TabIndex = 57;
             this.speedbox.Value = new decimal(new int[] {
-            15,
+            30,
             0,
             0,
             0});
@@ -342,10 +265,9 @@ namespace WiimoteWhiteboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(282, 254);
+            this.ClientSize = new System.Drawing.Size(282, 194);
             this.Controls.Add(this.speedbox);
             this.Controls.Add(this.label7);
-            this.Controls.Add(this.trackval);
             this.Controls.Add(this.mousebtn);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.lblSmoothing);
@@ -356,8 +278,10 @@ namespace WiimoteWhiteboard
             this.Controls.Add(this.btnCalibrate);
             this.Controls.Add(this.cbCursorControl);
             this.Controls.Add(this.groupBox4);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Wiimote Whiteboard";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Activated += new System.EventHandler(this.Form1_Activated);
@@ -389,17 +313,10 @@ namespace WiimoteWhiteboard
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button custombutton;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label zlbl;
-        private System.Windows.Forms.Label ylbl;
-        private System.Windows.Forms.Label xlbl;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label lblSmoothing;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button mousebtn;
-        private System.Windows.Forms.Label trackval;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown speedbox;
 	}
